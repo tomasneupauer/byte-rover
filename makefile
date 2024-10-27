@@ -1,7 +1,10 @@
 all: main archive
 
-main: src/Main.java
-	javac -d build/ src/Main.java
+main: src/AppView.java
+	javac -d build/ -cp ".:lib/flatlaf.jar" src/*.java
 
-archive: build/Main.class
-	jar -cfe release/byterover.jar Main -C build/ .
+archive: build/AppView.class
+	jar -cfm release/byterover.jar src/manifest.mf -C build/ .
+
+clear:
+	rm build/*
