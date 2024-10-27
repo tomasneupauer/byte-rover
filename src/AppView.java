@@ -15,7 +15,7 @@ public class AppView {
 
         JPanel panel = new JPanel();
         panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
-        panel.setLayout(new GridLayout(0, 2, 10, 10));
+        panel.setLayout(new GridLayout(0, 2, 15, 15));
         frame.add(panel);
 
         JButton button = new JButton("button");
@@ -35,6 +35,16 @@ public class AppView {
 
         JLabel label = new JLabel("label");
         panel.add(label);
+
+        JSlider slider = new JSlider();
+        panel.add(slider);
+
+        JRadioButton radio = new JRadioButton("button");
+        panel.add(radio);
+
+        String vals[] = {"A", "B", "CDA", "ASD"};
+        JComboBox cbox = new JComboBox(vals);
+        panel.add(cbox);
 
         frame.pack();
     }
