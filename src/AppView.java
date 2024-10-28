@@ -1,4 +1,4 @@
-package org.byterover;
+package org.berandev.byterover;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.*;

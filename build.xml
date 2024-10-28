@@ -7,7 +7,7 @@
     <property name="package-dir" value="${build-dir}/package"/>
     <property name="lib-dir" value="${build-dir}/lib"/>
 
-    <property name="main-class" value="org.byterover.AppView"/>
+    <property name="main-class" value="org.berandev.byterover.AppView"/>
 
     <target name="clean">
         <delete dir="${build-dir}"/>
