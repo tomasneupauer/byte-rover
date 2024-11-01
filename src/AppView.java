@@ -4,18 +4,24 @@ import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.JFrame;
 import java.awt.CardLayout;
 
-public class AppView {
-    private JFrame frame;
-    private CardLayout frameLayout;
+public class AppView extends JFrame{
+    private CardLayout appViewLayout;
 
     public AppView (){
         FlatLightLaf.setup();
 
-        frame = new JFrame(ResourceLoader.getString("app.title"));
+        setTitle(ResourceLoader.getString("app.title"));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 300);
-        frame.setVisible(true);
+        appViewLayout = new CardLayout();
+        setLayout(appViewLayout);
+        
+        add(new PageView(new ProjectModel()), "PageView");
+        //appViewLayout.show(this, "PageView");
+
+        pack();
+        //setSize(500, 500);
+        setVisible(true);
     }
 
     public static void main(String[] args){
