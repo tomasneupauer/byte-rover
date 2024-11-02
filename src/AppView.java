@@ -20,12 +20,7 @@ public class AppView extends JFrame{
         //appViewLayout.show(this, "PageView");
 
         pack();
-        //setSize(500, 500);
         setVisible(true);
-    }
-
-    public static void main(String[] args){
-        new AppView();
     }
 }
 

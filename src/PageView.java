@@ -1,49 +1,51 @@
 package org.berandev.byterover;
 
 import javax.swing.JPanel;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Color;
+import javax.swing.JScrollPane;
+import javax.swing.JEditorPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.GridBagLayout;
 
 public class PageView extends JPanel{
     private ProjectModel projectModel;
 
     private JPanel controlPanel;
     private JTree projectTree;
-    private JPanel contentPanel;
+    
+    private JScrollPane circuitScrollPane;
+    private JPanel circuitPanel;
+
+    private JScrollPane contentScrollPane;
+    private JEditorPane contentEditorPane;
 
     public PageView (ProjectModel model){
         projectModel = model;
         setLayout(new GridBagLayout());
-        GridBagConstraints constraints;
-        buildProjectTree();
 
+        // WEST
         controlPanel = new JPanel();
-        controlPanel.setBackground(Color.green);
-        
-        constraints = new GridBagConstraints();
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        add(controlPanel, constraints);
+        controlPanel.setLayout(new GridBagLayout());
+        add(controlPanel, new Constraints(0, 0));
 
-        contentPanel = new JPanel();
-        contentPanel.setBackground(Color.red);
+        buildProjectTree();
+        controlPanel.add(projectTree, new Constraints(0, 0));
 
-        constraints = new GridBagConstraints();
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.gridx = 1;
-        constraints.gridy = 0;
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        add(contentPanel, constraints);
+        // CENTER
+        circuitPanel = new JPanel();
+        circuitPanel.setLayout(null);
 
-        controlPanel.add(projectTree);
-        contentPanel.add(new JTree(buildTreeLayer(projectModel.getProjectStructureRoot())));
+        circuitScrollPane = new JScrollPane(circuitPanel);
+        add(circuitScrollPane, new Constraints(1, 0));
+
+        // EAST
+        contentEditorPane = new JEditorPane();
+        contentEditorPane.setContentType(projectModel.getPageContentType());
+        contentEditorPane.setText(projectModel.getPageContent());
+        contentEditorPane.setEditable(false);
+
+        contentScrollPane = new JScrollPane(contentEditorPane);
+        add(contentScrollPane, new Constraints(2, 0));
     }
 
     private void buildProjectTree(){
