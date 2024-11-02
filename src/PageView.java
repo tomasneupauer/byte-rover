@@ -49,7 +49,7 @@ public class PageView extends JPanel{
     }
 
     private void buildProjectTree(){
-        projectTree = new JTree(buildTreeLayer(projectModel.getProjectStructureRoot()));
+        projectTree = new JTree(buildTreeLayer(projectModel.getProjectStructure()));
     }
 
     private DefaultMutableTreeNode buildTreeLayer(Object[] structure){

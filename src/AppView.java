@@ -16,8 +16,12 @@ public class AppView extends JFrame{
         appViewLayout = new CardLayout();
         setLayout(appViewLayout);
         
-        add(new PageView(new ProjectModel()), "PageView");
+        try {
+        add(new PageView(new ProjectModel("/data/Workspace/byte-rover/projects/sample_project.project")), "PageView");
         //appViewLayout.show(this, "PageView");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
         pack();
         setVisible(true);

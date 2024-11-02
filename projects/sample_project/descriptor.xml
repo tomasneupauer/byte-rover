@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="sample_project">
+    <pages>
+        <group name="Group One">
+            <page name="element1" file="element1" type="text/plain"/>
+            <page name="element2" file="element2" type="text/plain"/>
+        </group>
+        <page name="Page 1" file="page_1" type="text/plain"/>
+        <page name="Page 2" file="page_2" type="text/plain"/>
+    </pages>
+    <!--
+    <circuits>
+        <circuit name="page1">
+            <component id="1" type="nandGate"/>
+            <net id="12" type="signalWire">
+                <knot posX="1" posY="3" visible="false"/>
+            </net>
+        </circuit>
+        <circuit name="page2">
+            <component id="4" type="orGate"/>
+            <net id="25" type="signalBus" bitwidth="8">
+                <knot posX="1" posY="3" visible="true"/>
+            </net>
+        </circuit>
+    </circuits>
+    -->
+</project>
