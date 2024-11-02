@@ -1,19 +1,40 @@
 package org.berandev.byterover;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
 import java.io.FileInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipEntry;
 import java.util.HashMap;
+import java.util.ArrayList;
 
 public class ArchiveHandler {
     private HashMap<String, ByteArrayInputStream> inputStreamMap;
+    private Document projectDescriptor;
 
     public ArchiveHandler(String projectArchivePath) throws Exception {
+        try {
+            LoadProjectArchive(projectArchivePath);
+        }
+        catch (Exception exc){
+            if (exc instanceof FileNotFoundException){
+                throw new Exception(ResourceLoader.getString("exception.archiveNotFound"));
+            }
+            throw new Exception(ResourceLoader.getString("exception.archiveLoadFailed"));
+        }
+        LoadProjectDescriptor();
+    }
+
+    private void LoadProjectArchive(String projectArchivePath) throws Exception {
         FileInputStream inputFile = new FileInputStream(projectArchivePath);
         ZipInputStream inputZip = new ZipInputStream(inputFile);
-
         inputStreamMap = new HashMap<String, ByteArrayInputStream>();
         ZipEntry zipEntry;
         while ((zipEntry = inputZip.getNextEntry()) != null){
@@ -28,13 +49,41 @@ public class ArchiveHandler {
         }
     }
 
-    public String[] getEntryNames(){
-        String[] keys = new String[inputStreamMap.keySet().size()];
-        int i=0;
-        for (String key : inputStreamMap.keySet()){
-            keys[i++] = key;
+    private void LoadProjectDescriptor() throws Exception {
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        projectDescriptor = docBuilder.parse(inputStreamMap.get("descriptor.xml"));
+        if (projectDescriptor == null){
+            throw new Exception(ResourceLoader.getString("exception.descriptorNotFound"));
         }
-        return keys;
+        projectDescriptor.normalizeDocument();
+    }
+
+    public Object[] getProjectStructure() throws Exception {
+        Element projectElement = (Element) projectDescriptor.getElementsByTagName("project").item(0);
+        if (projectElement == null){
+            throw new Exception(ResourceLoader.getString("exception.invalidDescriptor"));
+        }
+        return buildProjectStructure(projectElement);
+    }
+
+    private Object[] buildProjectStructure(Element rootElement){
+        NodeList childNodes = rootElement.getChildNodes();
+        ArrayList<Object> childElements = new ArrayList<Object>();
+        childElements.add(rootElement.getAttribute("name"));
+        for (int i=0; i<childNodes.getLength(); i++){
+            Node childNode = childNodes.item(i);
+            if (childNode.getNodeType() == Node.ELEMENT_NODE){
+                Element childElement = (Element) childNode;
+                if (childElement.getTagName().equals("group")){
+                    childElements.add(buildProjectStructure(childElement));
+                }
+                if (childElement.getTagName().equals("page")){
+                    childElements.add(childElement.getAttribute("name"));
+                }
+            }
+        }
+        return childElements.toArray();
     }
 }
 

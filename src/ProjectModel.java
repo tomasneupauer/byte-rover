@@ -7,7 +7,7 @@ public class ProjectModel {
 
     public ProjectModel (String projectArchivePath) throws Exception {
         ArchiveHandler archiveHandler = new ArchiveHandler(projectArchivePath);
-        projectStructure = archiveHandler.getEntryNames();
+        projectStructure = archiveHandler.getProjectStructure();
 
         pageContentType = "text/html";
         pageContent = "<html><h1>Editor Pane</h1><p>Lorem ipsum, dolor sit amet</p></html>";

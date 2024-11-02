@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="sample_project">
-    <pages>
+<descriptor>
+    <project name="sample_project">
         <group name="Group One">
-            <page name="element1" file="element1" type="text/plain"/>
-            <page name="element2" file="element2" type="text/plain"/>
+            <page name="Element 1">
+                <content file="element_1" type="text/plain"/>
+            </page>
+            <page name="Element 2">
+                <content file="element_2" type="text/plain"/>
+            </page>
         </group>
-        <page name="Page 1" file="page_1" type="text/plain"/>
-        <page name="Page 2" file="page_2" type="text/plain"/>
-    </pages>
+        <page name="Page 1">
+            <content file="page_1" type="text/plain"/>
+        </page>
+        <page name="Page 2">
+            <content file="page_2" type="text/plain"/>
+        </page>
+    </project>
     <!--
     <circuits>
         <circuit name="page1">
@@ -24,4 +32,4 @@
         </circuit>
     </circuits>
     -->
-</project>
+</descriptor>
