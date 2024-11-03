@@ -8,5 +8,13 @@ public class ResourceLoader {
     public static String getString(String key){
         return strings.getString(key);
     }
+
+    public static String getException(String key){
+        return getString("exception." + key);
+    }
+
+    public static String getFilename(String key){
+        return getString("filename." + key);
+    }
 }
 

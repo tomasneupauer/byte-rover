@@ -9,57 +9,68 @@ import org.w3c.dom.Node;
 import java.io.FileInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipEntry;
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
-public class ArchiveHandler {
-    private HashMap<String, ByteArrayInputStream> inputStreamMap;
+public class ArchiveImportHandler {
+    private Map<String, byte[]> archiveEntries;
     private Document projectDescriptor;
 
     public ArchiveHandler(String projectArchivePath) throws Exception {
+        loadArchiveEntries(projectArchivePath);
+        loadProjectDescriptor();
+    }
+
+    public ProjectModel buildProjectModel(){
+        
+    }
+
+    private void loadArchiveEntries(String path) throws Exception {
+        ZipInputStream zipStream;
         try {
-            LoadProjectArchive(projectArchivePath);
+            zipStream = new ZipInputStream(new FileInputStream(projectArchivePath));
         }
         catch (Exception exc){
-            if (exc instanceof FileNotFoundException){
-                throw new Exception(ResourceLoader.getString("exception.archiveNotFound"));
-            }
-            throw new Exception(ResourceLoader.getString("exception.archiveLoadFailed"));
+            throw new Exception(ResourceLoader.getException("archiveNotFound"));
         }
-        LoadProjectDescriptor();
+        try {
+            while (zipStream.available()){
+                loadNextArchiveEntry(zipStream);
+            }
+            zipStream.close();
+        }
+        catch (Exception exc){
+            throw new Exception(ResourceLoader.getException("archiveLoadFailed"));
+        }
+        return archiveEntries;
     }
 
-    private void LoadProjectArchive(String projectArchivePath) throws Exception {
-        FileInputStream inputFile = new FileInputStream(projectArchivePath);
-        ZipInputStream inputZip = new ZipInputStream(inputFile);
-        inputStreamMap = new HashMap<String, ByteArrayInputStream>();
-        ZipEntry zipEntry;
-        while ((zipEntry = inputZip.getNextEntry()) != null){
-            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = inputZip.read(buffer)) > 0){
-                outStream.write(buffer, 0, len);
-            }
-            byte[] byteArray = outStream.toByteArray();
-            inputStreamMap.put(zipEntry.getName(), new ByteArrayInputStream(byteArray));
+    private void loadNextArchiveEntry(ZipInputStream zipStream) throws Exception {
+        ZipEntry zipEntry = zipStream.getNextEntry();
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024]; int length;
+        while ((length = zipStream.read(buffer)) > 0){
+            outStream.write(buffer, 0, length);
         }
+        archiveEntries.put(zipEntry.getName(), outStream.toByteArray());
     }
 
-    private void LoadProjectDescriptor() throws Exception {
+    private void loadProjectDescriptor() throws Exception {
+        String descriptorFilename = ResourceLoader.getFilename("projectDescriptor");
+        if (!archiveEntries.containKey(descriptorFilename)){
+            throw new Exception(ResourceLoader.getException("descriptorNotFound"));
+        }
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        projectDescriptor = docBuilder.parse(inputStreamMap.get("descriptor.xml"));
-        if (projectDescriptor == null){
-            throw new Exception(ResourceLoader.getString("exception.descriptorNotFound"));
-        }
+        byte[] descriptorEntry = archiveEntries.get(descriptorFilename);
+        projectDescriptor = docBuilder.parse(new ByteArrayInputStream(descriptorEntry));
         projectDescriptor.normalizeDocument();
     }
 
-    public Object[] getProjectStructure() throws Exception {
+    //public ProjectStructure getProjectStructure() throws Exception {
         Element projectElement = (Element) projectDescriptor.getElementsByTagName("project").item(0);
         if (projectElement == null){
             throw new Exception(ResourceLoader.getString("exception.invalidDescriptor"));
@@ -67,7 +78,7 @@ public class ArchiveHandler {
         return buildProjectStructure(projectElement);
     }
 
-    private Object[] buildProjectStructure(Element rootElement){
+    //private Object[] buildProjectStructure(Element rootElement){
         NodeList childNodes = rootElement.getChildNodes();
         ArrayList<Object> childElements = new ArrayList<Object>();
         childElements.add(rootElement.getAttribute("name"));
