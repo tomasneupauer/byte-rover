@@ -5,7 +5,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JEditorPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 import java.awt.GridBagLayout;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PageView extends JPanel{
     private ProjectModel projectModel;
@@ -19,8 +23,8 @@ public class PageView extends JPanel{
     private JScrollPane contentScrollPane;
     private JEditorPane contentEditorPane;
 
-    public PageView (ProjectModel model){
-        projectModel = model;
+    public PageView (ProjectModel projectModel){
+        this.projectModel = projectModel;
         setLayout(new GridBagLayout());
 
         // WEST
@@ -28,6 +32,7 @@ public class PageView extends JPanel{
         controlPanel.setLayout(new GridBagLayout());
         add(controlPanel, new Constraints(0, 0));
 
+        projectTree = new JTree();
         buildProjectTree();
         controlPanel.add(projectTree, new Constraints(0, 0));
 
@@ -49,20 +54,20 @@ public class PageView extends JPanel{
     }
 
     private void buildProjectTree(){
-        projectTree = new JTree(buildTreeLayer(projectModel.getProjectStructure()));
-    }
-
-    private DefaultMutableTreeNode buildTreeLayer(Object[] structure){
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode(structure[0]);
-        for (int i=1; i<structure.length; i++){
-            if (structure[i] instanceof String){
-                root.add(new DefaultMutableTreeNode(structure[i]));
+        Map<String, DefaultMutableTreeNode> treeNodes = new HashMap<String, DefaultMutableTreeNode>;
+        String[] treeNodeNames = projectModel.getTreeNodeNames();
+        for (String treeNodeName : treeNodeNames){
+            treeNodes.put(treeNodeName, new DefaultMutableTreeNode(treeNodeName));
+        }
+        for (String treeNodeName : treeNodeNames){
+            String treeNodeParentName = projectModel.getTreeNodeParentName(treeNodeName);
+            if (ProjectModel.isTreeRoot(treeNodeParentName)){
+                projectTree.setModel(new DefaultTreeModel(treeNodes.get(treeNodeName)));
             }
             else {
-                root.add(buildTreeLayer((Object[]) structure[i]));
+                treeNodes.get(treeNodeParentName).add(treeNodes.get(treeNodeName));
             }
         }
-        return root;
     }
 }
 

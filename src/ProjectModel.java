@@ -26,15 +26,11 @@ public class ProjectModel {
     }
 
     public addPage(String pageName, ContentEntry contentEntry){
-        pageModels.add(pageName, new PageModel(contentEntry));
+        pageModels.put(pageName, new PageModel(contentEntry));
     }
 
     public addTreeNode(String groupName, String parentName){
-        treeNodes.add(groupName, parentName);
-    }
-
-    public boolean isPage(String nodeName){
-        return pageModels.containsKey(nodeName);
+        treeNodes.put(groupName, parentName);
     }
 
     public String[] getTreeNodeNames(){
@@ -43,6 +39,10 @@ public class ProjectModel {
 
     public String getTreeNodeParentName(String nodeName){
         return treeNodes.get(nodeName)
+    }
+
+    public boolean isTreeRoot(String nodeName){
+        return treeNodes.get(nodeName) == null;
     }
 }
 
