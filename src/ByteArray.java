@@ -1,6 +1,7 @@
 package org.berandev.byterover;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 public class ByteArray {
     protected byte[] content;
@@ -9,25 +10,25 @@ public class ByteArray {
         this.content = content;
     }
 
-    public getContent(){
+    public byte[] getContent(){
         return content;
     }
 
-    public setContent(byte[] content){
+    public void setContent(byte[] content){
         this.content = content;
     }
 
-    public toString(){
+    public String toString(){
         return new String(content);
     }
 }
 
 class StreamEntry extends ByteArray {
-    public ArchiveEntry(byte[] content){
-        super(content);
+    public StreamEntry(ByteArrayOutputStream contentStream){
+        super(contentStream.toByteArray());
     }
 
-    public toInputStream(){
+    public ByteArrayInputStream toInputStream(){
         return new ByteArrayInputStream(content);
     }
 }
@@ -35,12 +36,12 @@ class StreamEntry extends ByteArray {
 class ContentEntry extends ByteArray {
     private String contentType;
 
-    public ContentEntry(byte[] content, String contentType){;
-        this.contentType = contentType;
+    public ContentEntry(byte[] content, String contentType){
         super(content);
+        this.contentType = contentType;
     }
 
-    public getType(){
+    public String getType(){
         return contentType;
     }
 }

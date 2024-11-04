@@ -29,14 +29,14 @@ public class ArchiveHandler {
         projectModel = new ProjectModel(projectElement.getAttribute("name"));
         buildProjectGroups(projectElement);
         buildProjectPages(projectElement);
-        return projectModel
+        return projectModel;
     }
 
     private static void buildProjectGroups(Element projectElement){
         NodeList groupElements = projectElement.getElementsByTagName("group");
         for (int i=0; i<groupElements.getLength(); i++){
             Element groupElement = (Element) groupElements.item(i);
-            Element parentElement = (Element) group.getParentNode();
+            Element parentElement = (Element) groupElement.getParentNode();
             String groupName = groupElement.getAttribute("name");
             String parentName = parentElement.getAttribute("name");
             projectModel.addTreeNode(groupName, parentName);
@@ -49,7 +49,7 @@ public class ArchiveHandler {
             Element pageElement = (Element) pageElements.item(i);
             Element parentElement = (Element) pageElement.getParentNode();
             String pageName = pageElement.getAttribute("name");
-            String parentName = parentElement.getAttribute("name")
+            String parentName = parentElement.getAttribute("name");
             projectModel.addTreeNode(pageName, parentName);
             buildPageContent(pageElement);
         }
@@ -57,7 +57,7 @@ public class ArchiveHandler {
 
     private static void buildPageContent(Element pageElement){
         NodeList contentElements =pageElement.getElementsByTagName("content");
-        if (contentElements.getLength > 0){
+        if (contentElements.getLength() > 0){
             Element contentElement = (Element) contentElements.item(0);
             String pageName = pageElement.getAttribute("name");
             String pageType = contentElement.getAttribute("type");

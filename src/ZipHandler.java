@@ -13,7 +13,7 @@ public class ZipHandler {
     private static ZipInputStream zipInputStream;
 
     public static Map<String, ByteArray> loadZip(String zipPath) throws Exception {
-        archiveEntries = new HashMap<String, ArchiveEntry>();
+        archiveEntries = new HashMap<String, ByteArray>();
         try {
             zipInputStream = new ZipInputStream(new FileInputStream(zipPath));
         }
@@ -21,7 +21,7 @@ public class ZipHandler {
             throw new Exception(ResourceLoader.getException("archiveNotFound"));
         }
         try {
-            while (zipInputStream.available()){
+            while (zipInputStream.available() == 1){
                 loadNextZipEntry();
             }
             zipInputStream.close();
@@ -36,10 +36,10 @@ public class ZipHandler {
         ZipEntry zipEntry = zipInputStream.getNextEntry();
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024]; int length;
-        while ((length = zipStream.read(buffer)) > 0){
+        while ((length = zipInputStream.read(buffer)) > 0){
             outStream.write(buffer, 0, length);
         }
-        ArchiveEntry archiveEntry = new ArchiveEntry(outStream.toByteArray());
+        StreamEntry archiveEntry = new StreamEntry(outStream);
         archiveEntries.put(zipEntry.getName(), archiveEntry);
     }
 }

@@ -45,8 +45,8 @@ public class PageView extends JPanel{
 
         // EAST
         contentEditorPane = new JEditorPane();
-        contentEditorPane.setContentType(projectModel.getPageContentType());
-        contentEditorPane.setText(projectModel.getPageContent());
+        contentEditorPane.setContentType("/text/plain");
+        contentEditorPane.setText("lorem ipsum dolor sit amet");
         contentEditorPane.setEditable(false);
 
         contentScrollPane = new JScrollPane(contentEditorPane);
@@ -54,14 +54,14 @@ public class PageView extends JPanel{
     }
 
     private void buildProjectTree(){
-        Map<String, DefaultMutableTreeNode> treeNodes = new HashMap<String, DefaultMutableTreeNode>;
+        Map<String, DefaultMutableTreeNode> treeNodes = new HashMap<String, DefaultMutableTreeNode>();
         String[] treeNodeNames = projectModel.getTreeNodeNames();
         for (String treeNodeName : treeNodeNames){
             treeNodes.put(treeNodeName, new DefaultMutableTreeNode(treeNodeName));
         }
         for (String treeNodeName : treeNodeNames){
             String treeNodeParentName = projectModel.getTreeNodeParentName(treeNodeName);
-            if (ProjectModel.isTreeRoot(treeNodeParentName)){
+            if (projectModel.isTreeRoot(treeNodeParentName)){
                 projectTree.setModel(new DefaultTreeModel(treeNodes.get(treeNodeName)));
             }
             else {

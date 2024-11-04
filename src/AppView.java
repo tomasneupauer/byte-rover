@@ -17,8 +17,8 @@ public class AppView extends JFrame{
         setLayout(appViewLayout);
         
         try {
-        add(new PageView(new ProjectModel("/data/Workspace/byte-rover/projects/sample_project.project")), "PageView");
-        //appViewLayout.show(this, "PageView");
+            ProjectModel projectModel = ArchiveHandler.loadArchive("/data/Workspace/byte-rover/projects/sample_project.project");
+            add(new PageView(projectModel), "PageView");
         } catch (Exception e){
             e.printStackTrace();
         }
