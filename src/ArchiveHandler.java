@@ -15,20 +15,29 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-public class ArchiveImportHandler {
-    private Map<String, byte[]> archiveEntries;
-    private Document projectDescriptor;
+class ArchiveEntry {
+    protected byte[] content;
 
-    public ArchiveHandler(String projectArchivePath) throws Exception {
-        loadArchiveEntries(projectArchivePath);
-        loadProjectDescriptor();
+    public ArchiveEntry(byte[] content){
+        this.content = content;
     }
 
-    public ProjectModel buildProjectModel(){
-        
+    public toInputStream(){
+        return new ByteArrayInputStream(content);
     }
 
-    private void loadArchiveEntries(String path) throws Exception {
+    public toString(){
+        return new String(content);
+    }
+
+    public getContent(){
+        return content;
+    }
+}
+
+class ZipHandler {
+    public static Map<String, byte[]> loadZipArchive(String zipArchivePath) throws Exception {
+        Map<String, byte[]> archiveEntries = new HashMap<String, byte[]>();
         ZipInputStream zipStream;
         try {
             zipStream = new ZipInputStream(new FileInputStream(projectArchivePath));
@@ -38,7 +47,13 @@ public class ArchiveImportHandler {
         }
         try {
             while (zipStream.available()){
-                loadNextArchiveEntry(zipStream);
+                ZipEntry zipEntry = zipStream.getNextEntry();
+                ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+                byte[] buffer = new byte[1024]; int length;
+                while ((length = zipStream.read(buffer)) > 0){
+                    outStream.write(buffer, 0, length);
+                }
+                archiveEntries.put(zipEntry.getName(), outStream.toByteArray());
             }
             zipStream.close();
         }
@@ -47,54 +62,68 @@ public class ArchiveImportHandler {
         }
         return archiveEntries;
     }
+}
 
-    private void loadNextArchiveEntry(ZipInputStream zipStream) throws Exception {
-        ZipEntry zipEntry = zipStream.getNextEntry();
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024]; int length;
-        while ((length = zipStream.read(buffer)) > 0){
-            outStream.write(buffer, 0, length);
-        }
-        archiveEntries.put(zipEntry.getName(), outStream.toByteArray());
-    }
+public class ArchiveHandler {
+    private Map<String, ArchiveEntry> archiveEntries;
+    private Document projectDescriptor;
+    private ProjectModel projectModel;
 
-    private void loadProjectDescriptor() throws Exception {
+    public ArchiveHandler(String projectArchivePath) throws Exception {
+        archiveEntries = ZipHandler.loadZipArchive(projectArchivePath);
         String descriptorFilename = ResourceLoader.getFilename("projectDescriptor");
         if (!archiveEntries.containKey(descriptorFilename)){
             throw new Exception(ResourceLoader.getException("descriptorNotFound"));
         }
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        byte[] descriptorEntry = archiveEntries.get(descriptorFilename);
-        projectDescriptor = docBuilder.parse(new ByteArrayInputStream(descriptorEntry));
+        ArchiveEntry descriptorEntry = archiveEntries.get(descriptorFilename);
+        projectDescriptor = docBuilder.parse(descriptorEntry.toInputStream());
         projectDescriptor.normalizeDocument();
     }
 
-    //public ProjectStructure getProjectStructure() throws Exception {
-        Element projectElement = (Element) projectDescriptor.getElementsByTagName("project").item(0);
-        if (projectElement == null){
-            throw new Exception(ResourceLoader.getString("exception.invalidDescriptor"));
-        }
-        return buildProjectStructure(projectElement);
+    public ProjectModel buildProjectModel(){
+        Element projectElement = projectDescriptor.getDocumentElement();
+        projectModel = new ProjectModel(projectElement.getAttribute("name"));
+        buildProjectGroups(projectElement);
+        buildProjectPages(projectElement);
+        return projectModel
     }
 
-    //private Object[] buildProjectStructure(Element rootElement){
-        NodeList childNodes = rootElement.getChildNodes();
-        ArrayList<Object> childElements = new ArrayList<Object>();
-        childElements.add(rootElement.getAttribute("name"));
-        for (int i=0; i<childNodes.getLength(); i++){
-            Node childNode = childNodes.item(i);
-            if (childNode.getNodeType() == Node.ELEMENT_NODE){
-                Element childElement = (Element) childNode;
-                if (childElement.getTagName().equals("group")){
-                    childElements.add(buildProjectStructure(childElement));
-                }
-                if (childElement.getTagName().equals("page")){
-                    childElements.add(childElement.getAttribute("name"));
-                }
+    private void buildProjectGroups(Element projectElement){
+        NodeList groupElements = projectElement.getElementsByTagName("group");
+        for (int i=0; i<groupElements.getLength(); i++){
+            Element groupElement = (Element) groupElements.item(i);
+            Element parentElement = (Element) group.getParentNode();
+            String groupName = groupElement.getAttribute("name");
+            String parentName = parentElement.getAttribute("name");
+            projectModel.addGroup(groupName, parentName);
+        }
+    }
+
+    private void buildProjectPages(Element projectElement){
+        NodeList pageElements = projectElement.getElementsByTagName("page");
+        for (int i=0; i<pageElements.getLength(); i++){
+            Element pageElement = (Element) pageElements.item(i);
+            Element parentElement = (Element) pageElement.getParentNode();
+            String pageName = pageElement.getAttribute("name");
+            String parentName = parentElement.getAttribute("name")
+            projectModel.addTreeNode(pageName, parentName);
+            buildPageContent(pageElement);
+        }
+    }
+
+    private void buildPageContent(Element pageElement){
+        Element contentElement = (Element) pageElement.getElementsByTagName("content").item(0);
+        if (contentElement != null){
+            String pageName = pageElement.getAttribute("name");
+            String pageType = contentElement.getAttribute("type");
+            String pageFile = contentElement.getAttribute("file");
+            ArchiveEntry archiveEntry = archiveEntries.get(pageFile);
+            if (pageEntry != null){
+                projectModel.addPage(pageName, new ContentEntry(archiveEntry, pageType));
             }
         }
-        return childElements.toArray();
     }
 }
 

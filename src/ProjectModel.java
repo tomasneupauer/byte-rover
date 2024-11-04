@@ -1,71 +1,46 @@
 package org.berandev.byterover;
 
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.DefaultTreeModel;
-import javax.seing.tree.DefaultMutableTreeNode;
+class ContentEntry extends ArchiveEntry {
+    private String contentType;
 
-class StructureNode {
-    protected String nodeName;
-    protected StructureNode parentNode;
-
-    public StructureNode (String name, StructureNode parent) {
-        nodeName = name;
-        parentNode = parent;
+    public ContentEntry(byte[] content, String contentType){
+        this.contentType = contentType;
+        super(content);
     }
 
-    public setName(String name){
-        nodeName = name;
-    }
-
-    public setParentNode(StructureNode node){
-        parentNode = node;
-    }
-
-    public getName(){
-        return nodeName;
-    }
-
-    public getParentNode(){
-        return parentNode;
+    public getType(){
+        return contentType;
     }
 }
 
-class PageNode extends StructureNode {
-    private byte[] pageContent;
-    private String pageType;
+class PageModel {
+    private ContentEntry contentEntry;
 
-    public PageNode(String name, StructureNode parent){
-        super(name, parent);
+    public PageModel(ContentEntry contentEntry){
+        this.contentEntry = contentEntry;
     }
 
-    public setPageContent(byte[] content, String type){
-        pageContent = content;
-        pageType = type;
+    public String toString(){
+        return contentEntry.toString();
     }
 }
 
 public class ProjectModel {
-    private List<PageNode> pageNodes;
-    private List<GroupNode> groupNodes;
+    private Map<String, PageModel> pageModels;
+    private Map<String, String> treeNodes;
 
-    public ProjectModel (String projectArchivePath) throws Exception {
-        ArchiveHandler importArchiveHandler = new ArchiveHandler(projectArchivePath);
-        projectStructure = archiveHandler.loadProjectStructure();
-
-        pageContentType = "text/html";
-        pageContent = "<html><h1>Editor Pane</h1><p>Lorem sum, dolor sit amet</p></html>";
+    public ProjectModel (String projectName){
+        pageModels = new HadhMap<String, PageModel>();
+        treeNodes = new HashMap<String, String>();
+        treeNodes.put(projectName, null);
     }
 
-    public Object[] getProjectStructure(){
-        return projectStructure;
+    public addPage(String pageName, ContentEntry contentEntry){
+        pageModels.add(pageName, new PageModel(contentEntry));
     }
 
-    public String getPageContentType(){
-        return pageContentType;
-    }
-
-    public String getPageContent(){
-        return pageContent;
+    public addTreeNode(String groupName, String parentName){
+        treeNodes.add(groupName, parentName);
     }
 }
 

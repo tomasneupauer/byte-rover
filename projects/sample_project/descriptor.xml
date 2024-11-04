@@ -1,35 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<descriptor>
-    <project name="sample_project">
-        <group name="Group One">
-            <page name="Element 1">
-                <content file="element_1" type="text/plain"/>
-            </page>
-            <page name="Element 2">
-                <content file="element_2" type="text/plain"/>
-            </page>
-        </group>
-        <page name="Page 1">
-            <content file="page_1" type="text/plain"/>
+<project name="sample_project">
+    <group name="Group One">
+        <page name="Element 1">
+            <content file="element_1" type="text/plain"/>
         </page>
-        <page name="Page 2">
-            <content file="page_2" type="text/plain"/>
+        <page name="Element 2">
+            <content file="element_2" type="text/plain"/>
         </page>
-    </project>
-    <!--
-    <circuits>
-        <circuit name="page1">
-            <component id="1" type="nandGate"/>
-            <net id="12" type="signalWire">
-                <knot posX="1" posY="3" visible="false"/>
-            </net>
-        </circuit>
-        <circuit name="page2">
-            <component id="4" type="orGate"/>
-            <net id="25" type="signalBus" bitwidth="8">
-                <knot posX="1" posY="3" visible="true"/>
-            </net>
-        </circuit>
-    </circuits>
-    -->
-</descriptor>
+    </group>
+    <page name="Page 1">
+        <content file="page_1" type="text/plain"/>
+    </page>
+    <page name="Page 2">
+        <content file="page_2" type="text/plain"/>
+    </page>
+</project>
+<!--
+<circuits>
+    <circuit name="page1">
+        <component id="1" type="nandGate"/>
+        <net id="12" type="signalWire">
+            <knot posX="1" posY="3" visible="false"/>
+        </net>
+    </circuit>
+    <circuit name="page2">
+        <component id="4" type="orGate"/>
+        <net id="25" type="signalBus" bitwidth="8">
+            <knot posX="1" posY="3" visible="true"/>
+        </net>
+    </circuit>
+</circuits>
+-->
