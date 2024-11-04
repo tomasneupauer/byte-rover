@@ -1,17 +1,7 @@
 package org.berandev.byterover;
 
-class ContentEntry extends ArchiveEntry {
-    private String contentType;
-
-    public ContentEntry(byte[] content, String contentType){
-        this.contentType = contentType;
-        super(content);
-    }
-
-    public getType(){
-        return contentType;
-    }
-}
+import java.util.HashMap;
+import java.util.Map;
 
 class PageModel {
     private ContentEntry contentEntry;
@@ -41,6 +31,18 @@ public class ProjectModel {
 
     public addTreeNode(String groupName, String parentName){
         treeNodes.add(groupName, parentName);
+    }
+
+    public boolean isPage(String nodeName){
+        return pageModels.containsKey(nodeName);
+    }
+
+    public String[] getTreeNodeNames(){
+        return treeNodes.keySet.toArray();
+    }
+
+    public String getTreeNodeParentName(String nodeName){
+        return treeNodes.get(nodeName)
     }
 }
 
