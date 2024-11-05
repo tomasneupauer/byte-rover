@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="sample_project">
     <group name="Group One">
-        <page name="Element 1">
+        <page name="Element 1" default="true">
             <content file="element_1" type="text/plain"/>
         </page>
         <page name="Element 2">

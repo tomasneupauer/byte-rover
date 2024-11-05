@@ -21,8 +21,9 @@ public class ZipHandler {
             throw new Exception(ResourceLoader.getException("archiveNotFound"));
         }
         try {
-            while (zipInputStream.available() == 1){
-                loadNextZipEntry();
+            ZipEntry zipEntry;
+            while ((zipEntry = zipInputStream.getNextEntry()) != null){
+                readZipEntry(zipEntry);
             }
             zipInputStream.close();
         }
@@ -32,8 +33,7 @@ public class ZipHandler {
         return archiveEntries;
     }
 
-    private static void loadNextZipEntry() throws Exception {
-        ZipEntry zipEntry = zipInputStream.getNextEntry();
+    private static void readZipEntry(ZipEntry zipEntry) throws Exception {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024]; int length;
         while ((length = zipInputStream.read(buffer)) > 0){

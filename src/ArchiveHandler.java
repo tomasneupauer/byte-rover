@@ -65,6 +65,9 @@ public class ArchiveHandler {
             if (archiveEntries.containsKey(pageFile)){
                 byte[] pageContent = archiveEntries.get(pageFile).getContent();
                 projectModel.addPage(pageName, new ContentEntry(pageContent, pageType));
+                if (pageElement.getAttribute("default").equals("true")){
+                    projectModel.setDefaultPageName(pageName);
+                }
             }
         }
     }

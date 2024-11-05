@@ -32,8 +32,7 @@ public class PageView extends JPanel{
         controlPanel.setLayout(new GridBagLayout());
         add(controlPanel, new Constraints(0, 0));
 
-        projectTree = new JTree();
-        buildProjectTree();
+        projectTree = new JTree(buildProjectTree());
         controlPanel.add(projectTree, new Constraints(0, 0));
 
         // CENTER
@@ -53,21 +52,20 @@ public class PageView extends JPanel{
         add(contentScrollPane, new Constraints(2, 0));
     }
 
-    private void buildProjectTree(){
+    private TreeModel buildProjectTree(){
         Map<String, DefaultMutableTreeNode> treeNodes = new HashMap<String, DefaultMutableTreeNode>();
+        String treeRootName = projectModel.getTreeRootName();
+        treeNodes.put(treeRootName, new DefaultMutableTreeNode(treeRootName));
+        TreeModel projectTreeModel = new DefaultTreeModel(treeNodes.get(treeRootName));
         String[] treeNodeNames = projectModel.getTreeNodeNames();
         for (String treeNodeName : treeNodeNames){
             treeNodes.put(treeNodeName, new DefaultMutableTreeNode(treeNodeName));
         }
         for (String treeNodeName : treeNodeNames){
             String treeNodeParentName = projectModel.getTreeNodeParentName(treeNodeName);
-            if (projectModel.isTreeRoot(treeNodeParentName)){
-                projectTree.setModel(new DefaultTreeModel(treeNodes.get(treeNodeName)));
-            }
-            else {
-                treeNodes.get(treeNodeParentName).add(treeNodes.get(treeNodeName));
-            }
+            treeNodes.get(treeNodeParentName).add(treeNodes.get(treeNodeName));
         }
+        return projectTreeModel;
     }
 }
 
