@@ -17,7 +17,7 @@ public class AppView extends JFrame{
         setLayout(appViewLayout);
         
         try {
-            ProjectModel projectModel = ArchiveHandler.loadArchive("projects/sample_project.project");
+            ProjectModel projectModel = ArchiveImportHandler.importArchive("projects/sample_project.project");
             add(new PageView(projectModel), "PageView");
         } catch (Exception e){
             e.printStackTrace();

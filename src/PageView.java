@@ -44,8 +44,8 @@ public class PageView extends JPanel{
 
         // EAST
         contentEditorPane = new JEditorPane();
-        contentEditorPane.setContentType("/text/plain");
-        contentEditorPane.setText("lorem ipsum dolor sit amet");
+        contentEditorPane.setContentType(projectModel.getPageType());
+        contentEditorPane.setText(projectModel.getPageContent());
         contentEditorPane.setEditable(false);
 
         contentScrollPane = new JScrollPane(contentEditorPane);

@@ -8,11 +8,11 @@ import org.w3c.dom.NodeList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ArchiveHandler {
+public class ArchiveImportHandler {
     private static Map<String, ByteArray> archiveEntries;
     private static ProjectModel projectModel;
 
-    public static ProjectModel loadArchive(String archivePath) throws Exception {
+    public static ProjectModel importArchive(String archivePath) throws Exception {
         archiveEntries = ZipHandler.loadZip(archivePath);
         String descriptorFilename = ResourceLoader.getFilename("projectDescriptor");
         if (!archiveEntries.containsKey(descriptorFilename)){
@@ -22,13 +22,17 @@ public class ArchiveHandler {
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
         StreamEntry descriptorEntry = (StreamEntry) archiveEntries.get(descriptorFilename);
         Document projectDescriptor = docBuilder.parse(descriptorEntry.toInputStream());
+        projectDescriptor.getDocumentElement().normalize();
         return buildProjectModel(projectDescriptor.getDocumentElement());
     }
 
-    private static ProjectModel buildProjectModel(Element projectElement){
+    private static ProjectModel buildProjectModel(Element projectElement) throws Exception{
         projectModel = new ProjectModel(projectElement.getAttribute("name"));
         buildProjectGroups(projectElement);
         buildProjectPages(projectElement);
+        if (!projectModel.hasSelectedPage()){
+            throw new Exception(ResourceLoader.getException("invalidDescriptor"));
+        }
         return projectModel;
     }
 
@@ -64,9 +68,9 @@ public class ArchiveHandler {
             String pageFile = contentElement.getAttribute("file");
             if (archiveEntries.containsKey(pageFile)){
                 byte[] pageContent = archiveEntries.get(pageFile).getContent();
-                projectModel.addPage(pageName, new ContentEntry(pageContent, pageType));
+                projectModel.addPage(pageName, pageContent, pageType);
                 if (pageElement.getAttribute("default").equals("true")){
-                    projectModel.setDefaultPageName(pageName);
+                    projectModel.selectPage(pageName);
                 }
             }
         }

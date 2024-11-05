@@ -15,19 +15,4 @@
         <content file="page_2" type="text/plain"/>
     </page>
 </project>
-<!--
-<circuits>
-    <circuit name="page1">
-        <component id="1" type="nandGate"/>
-        <net id="12" type="signalWire">
-            <knot posX="1" posY="3" visible="false"/>
-        </net>
-    </circuit>
-    <circuit name="page2">
-        <component id="4" type="orGate"/>
-        <net id="25" type="signalBus" bitwidth="8">
-            <knot posX="1" posY="3" visible="true"/>
-        </net>
-    </circuit>
-</circuits>
--->
+
