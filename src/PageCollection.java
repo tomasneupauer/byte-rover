@@ -3,8 +3,9 @@ package org.berandev.byterover;
 import java.util.Map;
 
 public interface PageCollection {
-    default void addPage(String pageName, byte[] pageContent, String pageType){
-        getPageEntries().put(pageName, new PageEntry(pageContent, pageType));
+    default void addPage(String pageName, ByteArray pageContent, String pageType){
+        getPageEntries().put(pageName, pageContent);
+        getPageTypes().put(pageName, pageType);
     }
 
     default boolean isPage(String pageName){
@@ -20,19 +21,22 @@ public interface PageCollection {
     }
 
     default String getPageType(String pageName){
-        return isPage(pageName) ? getPageEntries().get(pageName).getType() : "";
+        return isPage(pageName) ? getPageTypes().get(pageName) : "";
     }
 
-    default String getPageContent(){
+    default String getSelectedPageContent(){
         return getPageContent(getSelectedPageName());
     }
 
-    default String getPageType(){
+    default String getSelectedPageType(){
         return getPageType(getSelectedPageName());
     }
 
     void selectPage(String pageName);
     String getSelectedPageName();
-    Map<String, PageEntry> getPageEntries();
+
+    //helper
+    Map<String, ByteArray> getPageEntries();
+    Map<String, String> getPageTypes();
 }
 

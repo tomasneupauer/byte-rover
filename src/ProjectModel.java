@@ -5,13 +5,15 @@ import java.util.Map;
 
 public class ProjectModel implements TreeStructure, PageCollection{
     private Map<String, String> treeNodes;
-    private Map<String, PageEntry> pageEntries;
+    private Map<String, ByteArray> pageEntries;
+    private Map<String, String> pageTypes;
     private String projectName;
     private String selectedPageName;
 
     public ProjectModel (String projectName){
         treeNodes = new HashMap<String, String>();
-        pageEntries = new HashMap<String, PageEntry>();
+        pageEntries = new HashMap<String, ByteArray>();
+        pageTypes = new HashMap<String, String>();
         this.projectName = projectName;
     }
 
@@ -27,12 +29,19 @@ public class ProjectModel implements TreeStructure, PageCollection{
         return selectedPageName;
     };
 
+    //helper
     public Map<String, String> getTreeNodes(){
         return treeNodes;
     }
 
-    public Map<String, PageEntry> getPageEntries(){
+    //helper
+    public Map<String, ByteArray> getPageEntries(){
         return pageEntries;
+    }
+
+    //helper
+    public Map<String, String> getPageTypes(){
+        return pageTypes;
     }
 }
 

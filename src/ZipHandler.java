@@ -39,7 +39,8 @@ public class ZipHandler {
         while ((length = zipInputStream.read(buffer)) > 0){
             outStream.write(buffer, 0, length);
         }
-        StreamEntry archiveEntry = new StreamEntry(outStream);
+        ByteArray archiveEntry = new ByteArray(outStream);
         archiveEntries.put(zipEntry.getName(), archiveEntry);
     }
 }
+

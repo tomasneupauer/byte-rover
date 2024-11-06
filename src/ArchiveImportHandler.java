@@ -20,7 +20,7 @@ public class ArchiveImportHandler {
         }
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        StreamEntry descriptorEntry = (StreamEntry) archiveEntries.get(descriptorFilename);
+        ByteArray descriptorEntry = archiveEntries.get(descriptorFilename);
         Document projectDescriptor = docBuilder.parse(descriptorEntry.toInputStream());
         projectDescriptor.getDocumentElement().normalize();
         return buildProjectModel(projectDescriptor.getDocumentElement());
@@ -67,8 +67,7 @@ public class ArchiveImportHandler {
             String pageType = contentElement.getAttribute("type");
             String pageFile = contentElement.getAttribute("file");
             if (archiveEntries.containsKey(pageFile)){
-                byte[] pageContent = archiveEntries.get(pageFile).getContent();
-                projectModel.addPage(pageName, pageContent, pageType);
+                projectModel.addPage(pageName, archiveEntries.get(pageFile), pageType);
                 if (pageElement.getAttribute("default").equals("true")){
                     projectModel.selectPage(pageName);
                 }

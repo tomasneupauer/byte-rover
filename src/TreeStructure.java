@@ -16,6 +16,8 @@ public interface TreeStructure {
     }
 
     String getTreeRootName();
+
+    //helper
     Map<String, String> getTreeNodes();
 }
 

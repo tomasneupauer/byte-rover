@@ -4,49 +4,42 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 public class ByteArray {
-    private byte[] content;
+    private byte[] contentBytes;
 
-    public ByteArray(byte[] content){
-        this.content = content;
+    public ByteArray(byte[] contentByteArray){
+        setContent(contentByteArray);
     }
 
-    public byte[] getContent(){
-        return content;
+    public ByteArray(String contentString){
+        setContent(contentString);
     }
 
-    public void setContent(byte[] content){
-        this.content = content;
+    public ByteArray(ByteArrayOutputStream contentStream){
+        setContent(contentStream);
+    }
+
+    public void setContent(byte[] contentByteArray){
+        contentBytes = contentByteArray;
+    }
+
+    public void setContent(String contentString){
+        contentBytes = contentString.getBytes();
+    }
+
+    public void setContent(ByteArrayOutputStream contentStream){
+        contentBytes = contentStream.toByteArray();
+    }
+
+    public byte[] getBytes(){
+        return contentBytes;
     }
 
     public String toString(){
-        return new String(content);
-    }
-}
-
-class StreamEntry extends ByteArray {
-    public StreamEntry(ByteArrayOutputStream contentStream){
-        super(contentStream.toByteArray());
+        return new String(contentBytes);
     }
 
     public ByteArrayInputStream toInputStream(){
-        return new ByteArrayInputStream(getContent());
-    }
-}
-
-class PageEntry extends ByteArray {
-    private String contentType;
-
-    public PageEntry(byte[] content, String contentType){
-        super(content);
-        this.contentType = contentType;
-    }
-
-    public String getType(){
-        return contentType;
-    }
-
-    public void setContent(String content){
-        setContent(content.getBytes());
+        return new ByteArrayInputStream(contentBytes);
     }
 }
 
