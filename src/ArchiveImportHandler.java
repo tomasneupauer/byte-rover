@@ -43,7 +43,7 @@ public class ArchiveImportHandler {
             Element parentElement = (Element) groupElement.getParentNode();
             String groupName = groupElement.getAttribute("name");
             String parentName = parentElement.getAttribute("name");
-            projectModel.addTreeNode(groupName, parentName);
+            projectModel.insertTreeNode(groupName, parentName);
         }
     }
 
@@ -54,24 +54,27 @@ public class ArchiveImportHandler {
             Element parentElement = (Element) pageElement.getParentNode();
             String pageName = pageElement.getAttribute("name");
             String parentName = parentElement.getAttribute("name");
-            projectModel.addTreeNode(pageName, parentName);
+            projectModel.insertTreeNode(pageName, parentName);
             buildPageContent(pageElement);
         }
     }
 
     private static void buildPageContent(Element pageElement){
         NodeList contentElements =pageElement.getElementsByTagName("content");
-        if (contentElements.getLength() > 0){
-            Element contentElement = (Element) contentElements.item(0);
-            String pageName = pageElement.getAttribute("name");
-            String pageType = contentElement.getAttribute("type");
-            String pageFile = contentElement.getAttribute("file");
-            if (archiveEntries.containsKey(pageFile)){
-                projectModel.addPage(pageName, archiveEntries.get(pageFile), pageType);
-                if (pageElement.getAttribute("default").equals("true")){
-                    projectModel.selectPage(pageName);
-                }
-            }
+        if (contentElements.getLength() == 0){
+            return;
+        }
+        Element contentElement = (Element) contentElements.item(0);
+        String pageName = pageElement.getAttribute("name");
+        String pageType = contentElement.getAttribute("type");
+        String pageFile = contentElement.getAttribute("file");
+        if (!archiveEntries.containsKey(pageFile)){
+            return;
+        }
+        projectModel.insertPage(pageName, archiveEntries.get(pageFile));
+        projectModel.setPageType(pageName, pageType);
+        if (pageElement.getAttribute("default").equals("true")){
+            projectModel.selectPage(pageName);
         }
     }
 }

@@ -17,8 +17,11 @@ public class AppView extends JFrame{
         setLayout(appViewLayout);
         
         try {
-            ProjectModel projectModel = ArchiveImportHandler.importArchive("projects/sample_project.project");
-            add(new PageView(projectModel), "PageView");
+            String path = "projects/sample_project.project";
+            ProjectModel projectModel = ArchiveImportHandler.importArchive(path);
+            PageController pageController = new PageController(projectModel);
+            
+            add(pageController.getView(), "PageView");
         } catch (Exception e){
             e.printStackTrace();
         }
