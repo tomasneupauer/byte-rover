@@ -1,8 +1,12 @@
 package org.berandev.byterover;
 
+import java.awt.EventQueue;
+
 public class ByteRover {
     public static void main(String[] args){
-        new AppView();
+        EventQueue.invokeLater(() -> {
+            new AppView();
+        });
     }
 }
 
