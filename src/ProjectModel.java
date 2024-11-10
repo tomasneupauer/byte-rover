@@ -3,39 +3,59 @@ package org.berandev.byterover;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProjectModel implements DefaultTreeStructure, DefaultPageCollection {
-    // Project Model
+public class ProjectModel implements PageCollection, TreeStructure {
+    private Map<String, PageModel> pageModels;
     private Map<String, String> treeNodes;
-    private Map<String, ByteArray> pageEntries;
-    private Map<String, String> pageTypes;
     private String selectedPageName;
     private String projectName;
 
-    public ProjectModel (String projectName){
+    public ProjectModel(String name){
+        pageModels = new HashMap<String, PageModel>();
         treeNodes = new HashMap<String, String>();
-        pageEntries = new HashMap<String, ByteArray>();
-        pageTypes = new HashMap<String, String>();
-        this.projectName = projectName;
-        insertRootNode(projectName);
+        selectedPageName = name;
+        projectName = name;
+        newPage(name, null);
     }
 
-    // Tree Structure
-    public String getTreeRootName(){
-        return projectName;
+    public void newGroup(String name, String parent){
+        insertTreeNode(name, parent);
     }
 
-    // Page Collection
-    public void selectPage(String pageName){
-        selectedPageName = pageName;
+    public void newPage(String name, String parent){
+        insertTreeNode(name, parent);
+        insertPage(name);
+    }
+
+    @Override
+    public void renameTreeNode(String oldName, String newName){
+        TreeStructure.super.renameTreeNode(oldName, newName);
+        renamePage(oldName, newName);
+    }
+
+    @Override
+    public void removeTreeNode(String name){
+        TreeStructure.super.removeTreeNode(name);
+        removePage(name);
+    }
+
+    public void setSelectedPageName(String name){
+        selectedPageName = name;
     }
 
     public String getSelectedPageName(){
         return selectedPageName;
-    };
+    }
 
-    // Helper Accessors;
-    public Map<String, String> getTreeNodes(){return treeNodes;}
-    public Map<String, ByteArray> getPageEntries(){return pageEntries;}
-    public Map<String, String> getPageTypes(){return pageTypes;}
+    public String getTreeRootName(){
+        return projectName;
+    }
+
+    public Map<String, PageModel> getPageModels(){
+        return pageModels;
+    }
+
+    public Map<String, String> getTreeNodes(){
+        return treeNodes;
+    }
 }
 

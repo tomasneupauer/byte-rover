@@ -5,19 +5,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JEditorPane;
 import javax.swing.JTree;
 
-public class PageView extends JPanel{
+public class ReaderView extends JPanel{
     private JPanel controlPanel;
-    
     private JPanel circuitPanel;
     private JScrollPane circuitScrollPane;
-    
     private JEditorPane contentEditorPane;
     private JScrollPane contentScrollPane;
-
     private JTree structureTree;
     private JScrollPane structureScrollPane;
 
-    public PageView(){
+    public ReaderView(){
         controlPanel = new JPanel();
         circuitPanel = new JPanel();
         circuitScrollPane = new JScrollPane(circuitPanel);
@@ -25,7 +22,10 @@ public class PageView extends JPanel{
         contentScrollPane = new JScrollPane(contentEditorPane);
         structureTree = new JTree();
         structureScrollPane = new JScrollPane(structureTree);
-        
+        initComponents();
+    }
+
+    private void initComponents(){
         add(controlPanel);
         add(circuitScrollPane);
         add(contentScrollPane);

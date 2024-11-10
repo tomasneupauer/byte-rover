@@ -30,9 +30,7 @@ public class ArchiveImportHandler {
         projectModel = new ProjectModel(projectElement.getAttribute("name"));
         buildProjectGroups(projectElement);
         buildProjectPages(projectElement);
-        if (!projectModel.hasSelectedPage()){
-            throw new Exception(ResourceLoader.getException("invalidDescriptor"));
-        }
+        buildPageContent(projectElement);
         return projectModel;
     }
 
@@ -43,7 +41,7 @@ public class ArchiveImportHandler {
             Element parentElement = (Element) groupElement.getParentNode();
             String groupName = groupElement.getAttribute("name");
             String parentName = parentElement.getAttribute("name");
-            projectModel.insertTreeNode(groupName, parentName);
+            projectModel.newGroup(groupName, parentName);
         }
     }
 
@@ -54,13 +52,13 @@ public class ArchiveImportHandler {
             Element parentElement = (Element) pageElement.getParentNode();
             String pageName = pageElement.getAttribute("name");
             String parentName = parentElement.getAttribute("name");
-            projectModel.insertTreeNode(pageName, parentName);
+            projectModel.newPage(pageName, parentName);
             buildPageContent(pageElement);
         }
     }
 
     private static void buildPageContent(Element pageElement){
-        NodeList contentElements =pageElement.getElementsByTagName("content");
+        NodeList contentElements = pageElement.getElementsByTagName("content");
         if (contentElements.getLength() == 0){
             return;
         }
@@ -71,10 +69,10 @@ public class ArchiveImportHandler {
         if (!archiveEntries.containsKey(pageFile)){
             return;
         }
-        projectModel.insertPage(pageName, archiveEntries.get(pageFile));
-        projectModel.setPageType(pageName, pageType);
+        ByteArray pageEntry = archiveEntries.get(pageFile);
+        projectModel.setPageContent(pageName, pageEntry, pageType);
         if (pageElement.getAttribute("default").equals("true")){
-            projectModel.selectPage(pageName);
+            projectModel.setSelectedPageName(pageName);
         }
     }
 }

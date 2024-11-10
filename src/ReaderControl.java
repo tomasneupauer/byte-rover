@@ -10,11 +10,29 @@ import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PageController{
+public class ReaderControl {
     private ProjectModel projectModel;
-    private PageView pageView;
+    private ReaderView readerView;
     private JTree structureTree;
     private JEditorPane contentEditorPane;
+
+    public ReaderControl(){
+        readerView = new ReaderView();
+        structureTree = readerView.getStructureTree();
+        contentEditorPane = readerView.getContentEditorPane();
+    }
+
+    public void initControl(ProjectModel projectModel){
+        this.projectModel = projectModel;
+        structureTree.setModel(buildStructureTree());
+        structureTree.addMouseListener(new TreeSelectionMouseListener());
+        contentEditorPane.setEditable(false);
+        updatePageSelection();
+    }
+
+    public ReaderView getView(){
+        return readerView;
+    }
 
     private class TreeSelectionMouseListener extends MouseAdapter {
         @Override
@@ -23,31 +41,17 @@ public class PageController{
                 TreePath eventPath = structureTree.getPathForLocation(event.getX(), event.getY());
                 DefaultMutableTreeNode eventNode = (DefaultMutableTreeNode) eventPath.getLastPathComponent();
                 String eventNodeName = (String) eventNode.getUserObject();
-                if (projectModel.isPage(eventNodeName)){
-                    projectModel.selectPage(eventNodeName);
+                if (projectModel.hasPage(eventNodeName)){
+                    projectModel.setSelectedPageName(eventNodeName);
                     updatePageSelection();
                 }
             }
         }
     }
 
-    public PageController (ProjectModel projectModel){
-        this.projectModel = projectModel;
-        pageView = new PageView();
-        structureTree = pageView.getStructureTree();
-        contentEditorPane = pageView.getContentEditorPane();
-        setupPageView();
-    }
-
-    public PageView getView(){
-        return pageView;
-    }
-
-    private void setupPageView(){
-        structureTree.setModel(buildStructureTree());
-        structureTree.addMouseListener(new TreeSelectionMouseListener());
-        contentEditorPane.setEditable(false);
-        updatePageSelection();
+    private void updatePageSelection(){
+        contentEditorPane.setContentType(projectModel.getSelectedContentType());
+        contentEditorPane.setText(projectModel.readSelectedContent());
     }
 
     private DefaultTreeModel buildStructureTree(){
@@ -63,11 +67,6 @@ public class PageController{
             }
         }
         return new DefaultTreeModel(treeNodes.get(projectModel.getTreeRootName()));
-    }
-
-    private void updatePageSelection(){
-        contentEditorPane.setContentType(projectModel.getSelectedPageType());
-        contentEditorPane.setText(projectModel.readSelectedPage());
     }
 }
 

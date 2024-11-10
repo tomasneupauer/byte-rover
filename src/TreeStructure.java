@@ -1,17 +1,33 @@
 package org.berandev.byterover;
 
+import java.util.Map;
+
 public interface TreeStructure {
-    //Mutators
-    void insertTreeNode(String nodeName, String parentName);
-    void updateTreeNode(String nodeName, String parentName);
-    void renameTreeNode(String nodeName, String newName);
-    void removeTreeNode(String nodeName);
-    void insertRootNode(String rootName);
-    //Accessors
-    String[] getTreeNodeNames();
-    String getTreeNodeParentName(String nodeName);
+    default void insertTreeNode(String name, String parent){
+        getTreeNodes().put(name, parent);
+    }
+
+    default void updateTreeNode(String name, String parent){
+        getTreeNodes().replace(name, parent);
+    }
+
+    default void renameTreeNode(String oldName, String newName){
+        getTreeNodes().put(newName, getTreeNodes().remove(oldName));
+    }
+
+    default void removeTreeNode(String name){
+        getTreeNodes().remove(name);
+    }
+
+    default String[] getTreeNodeNames(){
+        return getTreeNodes().keySet().toArray(new String[0]);
+    }
+
+    default String getTreeNodeParentName(String name){
+        return getTreeNodes().get(name);
+    }
+
     String getTreeRootName();
-    //Predicates
-    boolean isTreeNode(String nodeName);
+    Map<String, String> getTreeNodes();
 }
 
