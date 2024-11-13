@@ -38,7 +38,8 @@ public class ReaderControl {
         @Override
         public void mousePressed(MouseEvent event){
             if (event.getClickCount() == 2 && event.getButton() == MouseEvent.BUTTON1){
-                TreePath eventPath = structureTree.getPathForLocation(event.getX(), event.getY());
+                int eventRow = structureTree.getRowForLocation(event.getX(), event.getY());
+                TreePath eventPath = structureTree.getPathForRow(eventRow);
                 DefaultMutableTreeNode eventNode = (DefaultMutableTreeNode) eventPath.getLastPathComponent();
                 String eventNodeName = (String) eventNode.getUserObject();
                 if (projectModel.hasPage(eventNodeName)){
