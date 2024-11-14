@@ -58,11 +58,10 @@ public class ArchiveImportHandler {
     }
 
     private static void buildPageContent(Element pageElement){
-        NodeList contentElements = pageElement.getElementsByTagName("content");
-        if (contentElements.getLength() == 0){
+        Element contentElement = getChildByName(pageElement, "content");
+        if (contentElement == null){
             return;
         }
-        Element contentElement = (Element) contentElements.item(0);
         String pageName = pageElement.getAttribute("name");
         String pageType = contentElement.getAttribute("type");
         String pageFile = contentElement.getAttribute("file");
@@ -74,6 +73,16 @@ public class ArchiveImportHandler {
         if (pageElement.getAttribute("default").equals("true")){
             projectModel.setSelectedPageName(pageName);
         }
+    }
+
+    private static Element getChildByName(Element parent, String name){
+        NodeList childNodes = parent.getChildNodes();
+        for (int i=0; i<childNodes.getLength(); i++){
+            if (childNodes.item(i).getNodeName().equals(name)){
+                return (Element) childNodes.item(i);
+            }
+        }
+        return null;
     }
 }
 
