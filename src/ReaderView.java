@@ -20,7 +20,7 @@ public class ReaderView extends JPanel{
         circuitScrollPane = new JScrollPane(circuitPanel);
         contentEditorPane = new JEditorPane();
         contentScrollPane = new JScrollPane(contentEditorPane);
-        structureTree = new JTree();
+        structureTree = new StructureTree();
         structureScrollPane = new JScrollPane(structureTree);
         initComponents();
     }
