@@ -2,14 +2,12 @@ package org.berandev.byterover;
 
 import javax.swing.JEditorPane;
 import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingUtilities;
 
 public class ReaderControl {
-    private ProjectModel projectModel;
     private ReaderView readerView;
     private StructureTree projectTree;
     private JEditorPane contentEditorPane;
@@ -20,17 +18,19 @@ public class ReaderControl {
         contentEditorPane = readerView.getContentEditorPane();
     }
 
-    public void initControl(ProjectModel model){
-        projectModel = model;
-        projectTree.bindProjectModel(model);
-        projectTree.buildProjectTree();
-        projectTree.disableRootCollapse();
-        projectTree.setupCellEditor();
+    public void initControl(ProjectTreeModel model){
+        projectTree.setModel(model);
+        projectTree.setSelectionPath(model.getDefaultSelection());
         projectTree.addMouseListener(new TreeSelectionMouseListener());
+
+        //projectTree.bindProjectModel(model);
+        //projectTree.buildProjectTree();
+        //projectTree.disableRootCollapse();
+        //projectTree.setupCellEditor();
         //projectTree.startEditingAtPath(projectTree.getPathForRow(2));
-        System.out.println(projectTree.isEditable());
+        //System.out.println(projectTree.isEditable());
         contentEditorPane.setEditable(false);
-        updatePageSelection();
+        //updatePageSelection();
     }
 
     public ReaderView getView(){
@@ -38,8 +38,13 @@ public class ReaderControl {
     }
 
     private void updatePageSelection(){
-        contentEditorPane.setContentType(projectModel.getSelectedContentType());
-        contentEditorPane.setText(projectModel.readSelectedContent());
+        TreePath selectionPath = projectTree.getSelectionPath();
+        ProjectTreeNode selectedNode = (ProjectTreeNode) selectionPath.getLastPathComponent();
+        if (selectedNode.isLeaf()){
+            PageModel selectedPage = (PageModel) selectedNode.getUserObject();
+            contentEditorPane.setContentType(selectedPage.getContentType());
+            contentEditorPane.setText(selectedPage.readContent());
+        }
     }
 
     private class TreeSelectionMouseListener extends MouseAdapter {
@@ -47,10 +52,8 @@ public class ReaderControl {
         public void mousePressed(MouseEvent event){
             if (event.getClickCount() == 2 && event.getButton() == MouseEvent.BUTTON1){
                 TreePath eventPath = projectTree.getClosestPathForLocation(event.getX(), event.getY());
-                DefaultMutableTreeNode eventNode = (DefaultMutableTreeNode) eventPath.getLastPathComponent();
-                String eventNodeName = (String) eventNode.getUserObject();
-                if (projectModel.hasPage(eventNodeName)){
-                    projectModel.setSelectedPageName(eventNodeName);
+                ProjectTreeNode eventNode = (ProjectTreeNode) eventPath.getLastPathComponent();
+                if (eventNode.isLeaf()){
                     updatePageSelection();
                 }
             }

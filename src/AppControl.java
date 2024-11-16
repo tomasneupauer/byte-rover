@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 
 public class AppControl {
     private JFrame appView;
-    private ProjectModel projectModel;
+    private ProjectTreeModel projectModel;
     private ReaderControl readerControl;
 
     public AppControl(){

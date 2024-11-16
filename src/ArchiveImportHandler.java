@@ -5,14 +5,17 @@ import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ArchiveImportHandler {
     private static Map<String, ByteArray> archiveEntries;
-    private static ProjectModel projectModel;
+    private static ProjectTreeModel projectModel;
+    private static ProjectTreeNode defaultNode;
 
-    public static ProjectModel importArchive(String archivePath) throws Exception {
+    public static ProjectTreeModel importArchive(String archivePath) throws Exception {
         archiveEntries = ZipHandler.loadZip(archivePath);
         String descriptorFilename = ResourceLoader.getFilename("projectDescriptor");
         if (!archiveEntries.containsKey(descriptorFilename)){
@@ -23,66 +26,57 @@ public class ArchiveImportHandler {
         ByteArray descriptorEntry = archiveEntries.get(descriptorFilename);
         Document projectDescriptor = docBuilder.parse(descriptorEntry.toInputStream());
         projectDescriptor.getDocumentElement().normalize();
-        return buildProjectModel(projectDescriptor.getDocumentElement());
+        return buildProjectTreeModel(projectDescriptor.getDocumentElement());
     }
 
-    private static ProjectModel buildProjectModel(Element projectElement) throws Exception{
-        projectModel = new ProjectModel(projectElement.getAttribute("name"));
-        buildProjectGroups(projectElement);
-        buildProjectPages(projectElement);
-        buildPageContent(projectElement);
+    private static ProjectTreeModel buildProjectTreeModel(Element projectRoot){
+        projectModel = new ProjectTreeModel(buildProjectTreeNode(projectRoot));
+        if (defaultNode != null){
+            projectModel.setDefaultSelection(defaultNode.getPath());
+        }
         return projectModel;
     }
 
-    private static void buildProjectGroups(Element projectElement){
-        NodeList groupElements = projectElement.getElementsByTagName("group");
-        for (int i=0; i<groupElements.getLength(); i++){
-            Element groupElement = (Element) groupElements.item(i);
-            Element parentElement = (Element) groupElement.getParentNode();
-            String groupName = groupElement.getAttribute("name");
-            String parentName = parentElement.getAttribute("name");
-            projectModel.newGroup(groupName, parentName);
+    private static ProjectTreeNode buildProjectTreeNode(Element element){
+        ProjectTreeNode treeNode = new ProjectTreeNode(element.getAttribute("name"));
+        if (element.getNodeName().equals("page")){
+            if (element.getAttribute("default").equals("true")){
+                defaultNode = treeNode;
+            }
+            treeNode.setUserObject(new PageModel());
+            buildPageContent((PageModel) treeNode.getUserObject(), element);
+            //buildPageCircuit((PageModel) treeNode.getUserObject(), element);
         }
-    }
-
-    private static void buildProjectPages(Element projectElement){
-        NodeList pageElements = projectElement.getElementsByTagName("page");
-        for (int i=0; i<pageElements.getLength(); i++){
-            Element pageElement = (Element) pageElements.item(i);
-            Element parentElement = (Element) pageElement.getParentNode();
-            String pageName = pageElement.getAttribute("name");
-            String parentName = parentElement.getAttribute("name");
-            projectModel.newPage(pageName, parentName);
-            buildPageContent(pageElement);
-        }
-    }
-
-    private static void buildPageContent(Element pageElement){
-        Element contentElement = getChildByName(pageElement, "content");
-        if (contentElement == null){
-            return;
-        }
-        String pageName = pageElement.getAttribute("name");
-        String pageType = contentElement.getAttribute("type");
-        String pageFile = contentElement.getAttribute("file");
-        if (!archiveEntries.containsKey(pageFile)){
-            return;
-        }
-        ByteArray pageEntry = archiveEntries.get(pageFile);
-        projectModel.setPageContent(pageName, pageEntry, pageType);
-        if (pageElement.getAttribute("default").equals("true")){
-            projectModel.setSelectedPageName(pageName);
-        }
-    }
-
-    private static Element getChildByName(Element parent, String name){
-        NodeList childNodes = parent.getChildNodes();
-        for (int i=0; i<childNodes.getLength(); i++){
-            if (childNodes.item(i).getNodeName().equals(name)){
-                return (Element) childNodes.item(i);
+        else {
+            for (Element childElement : getValidChildren(element)){
+                treeNode.add(buildProjectTreeNode(childElement));
             }
         }
-        return null;
+        return treeNode;
+    }
+
+    private static void buildPageContent(PageModel page, Element element){
+        Element content = (Element) element.getElementsByTagName("content").item(0);
+        if (content == null){
+            return;
+        }
+        String pageFile = content.getAttribute("file");
+        String pageType = content.getAttribute("type");
+        if (archiveEntries.containsKey(pageFile)){
+            page.setContent(archiveEntries.get(pageFile), pageType);
+        }
+    }
+
+    private static Element[] getValidChildren(Element element){
+        List<Element> childElements = new ArrayList<>();
+        NodeList childNodes = element.getChildNodes();
+        for (int i=0; i<childNodes.getLength(); i++){
+            String nodeName = childNodes.item(0).getNodeName();
+            if (nodeName.equals("group") || nodeName.equals("page")){
+                childElements.add((Element) childNodes.item(0));
+            }
+        }
+        return childElements.toArray(new Element[0]);
     }
 }
 

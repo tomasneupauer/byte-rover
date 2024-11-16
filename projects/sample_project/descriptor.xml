@@ -8,11 +8,14 @@
             <content file="element_2" type="text/plain"/>
         </page>
     </group>
+    <group name="Empty Group">
+    </group>
     <page name="Page 1">
         <content file="page_1" type="text/plain"/>
     </page>
     <page name="Page 2">
         <content file="page_2" type="text/plain"/>
     </page>
+    <page name="Empty Page">
+    </page>
 </project>
-
