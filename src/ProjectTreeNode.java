@@ -14,5 +14,9 @@ public class ProjectTreeNode extends DefaultMutableTreeNode {
     public String toString(){
         return nodeName;
     }
+
+    public boolean isPage(){
+        return getUserObject() != null;
+    }
 }
 
