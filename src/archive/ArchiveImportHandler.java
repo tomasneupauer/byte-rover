@@ -42,9 +42,8 @@ public class ArchiveImportHandler {
             if (element.getAttribute("default").equals("true")){
                 defaultNode = treeNode;
             }
-            treeNode.setUserObject(new PageModel());
-            buildPageContent((PageModel) treeNode.getUserObject(), element);
-            //buildPageCircuit((PageModel) treeNode.getUserObject(), element);
+            treeNode.setPageModel(new PageModel());
+            buildPageContent(treeNode.getPageModel(), element);
         }
         else {
             for (Element childElement : getValidChildren(element)){

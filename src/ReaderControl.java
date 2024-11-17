@@ -22,11 +22,11 @@ public class ReaderControl {
     public void initControl(ProjectTreeModel model){
         projectTreeModel = model;
         projectTree.setModel(model);
-        projectTree.setSelectionPath(model.getPageSelection());
         projectTree.setEditable(true);
+        projectTree.setSelectionPath(model.getPageSelection());
         projectTree.addMouseListener(new TreeSelectionMouseListener());
         projectTree.disableRootCollapse();
-        projectTree.disableEditOnClick();
+        //projectTree.disableEditOnClick();
 
         contentEditorPane.setEditable(false);
         updatePageSelection();

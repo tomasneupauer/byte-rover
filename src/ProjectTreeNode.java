@@ -3,20 +3,22 @@ package org.berandev.byterover;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class ProjectTreeNode extends DefaultMutableTreeNode {
-    private String nodeName;
+    private PageModel pageModel;
 
     public ProjectTreeNode(String name){
-        super();
-        nodeName = name;
+        super(name);
     }
 
-    @Override
-    public String toString(){
-        return nodeName;
+    public void setPageModel(PageModel page){
+        pageModel = page;
+    }
+
+    public PageModel getPageModel(){
+        return pageModel;
     }
 
     public boolean isPage(){
-        return getUserObject() != null;
+        return pageModel != null;
     }
 }
 

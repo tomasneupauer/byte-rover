@@ -28,6 +28,6 @@ public class ProjectTreeModel extends DefaultTreeModel {
             return new PageModel();
         }
         ProjectTreeNode selectedNode = (ProjectTreeNode) pageSelection.getLastPathComponent();
-        return (PageModel) selectedNode.getUserObject();
+        return selectedNode.getPageModel();
     }
 }
