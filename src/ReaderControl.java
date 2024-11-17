@@ -3,15 +3,27 @@ package org.berandev.byterover;
 import javax.swing.JEditorPane;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.SwingUtilities;
+import java.awt.event.ActionEvent;
+
+import javax.swing.JPopupMenu;
+import javax.swing.JMenuItem;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+
+import javax.swing.InputMap;
+import javax.swing.ActionMap;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 
 public class ReaderControl {
     private ReaderView readerView;
     private StructureTree projectTree;
     private ProjectTreeModel projectTreeModel;
     private JEditorPane contentEditorPane;
+    private Action renameAction;
 
     public ReaderControl(){
         readerView = new ReaderView();
@@ -22,11 +34,14 @@ public class ReaderControl {
     public void initControl(ProjectTreeModel model){
         projectTreeModel = model;
         projectTree.setModel(model);
-        projectTree.setEditable(true);
         projectTree.setSelectionPath(model.getPageSelection());
         projectTree.addMouseListener(new TreeSelectionMouseListener());
-        projectTree.disableRootCollapse();
-        //projectTree.disableEditOnClick();
+
+        renameAction = new RenameTreeNodeAction(projectTree);
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem renameItem = new JMenuItem(renameAction);
+        menu.add(renameItem);
+        projectTree.setContextMenu(menu);
 
         contentEditorPane.setEditable(false);
         updatePageSelection();
@@ -42,16 +57,34 @@ public class ReaderControl {
         contentEditorPane.setText(selectedPage.readContent());
     }
 
+    private class RenameTreeNodeAction extends AbstractAction {
+        private StructureTree structureTree;
+
+        public RenameTreeNodeAction(StructureTree tree){
+            super("Rename");
+            structureTree = tree;
+        }
+
+        public void actionPerformed(ActionEvent event){
+            TreePath eventPath = structureTree.getSelectionPath();
+            structureTree.startEditingAtPath(eventPath);
+        }
+    }
+
     private class TreeSelectionMouseListener extends MouseAdapter {
         @Override
         public void mousePressed(MouseEvent event){
-            if (event.getClickCount() == 2 && event.getButton() == MouseEvent.BUTTON1){
-                TreePath eventPath = projectTree.getClosestPathForLocation(event.getX(), event.getY());
-                ProjectTreeNode eventNode = (ProjectTreeNode) eventPath.getLastPathComponent();
-                if (eventNode.isPage()){
-                    projectTreeModel.setPageSelection(eventPath);
-                    updatePageSelection();
-                }
+            if (event.getButton() != MouseEvent.BUTTON1 || event.getClickCount() != 2){
+                return;
+            }
+            TreePath eventPath = projectTree.getPathForMouseEvent(event);
+            if (eventPath == null){
+                return;
+            }
+            ProjectTreeNode eventNode = (ProjectTreeNode) eventPath.getLastPathComponent();
+            if (eventNode.isPage()){
+                projectTreeModel.setPageSelection(eventPath);
+                updatePageSelection();
             }
         }
     }
