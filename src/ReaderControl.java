@@ -37,7 +37,7 @@ public class ReaderControl {
         projectTree.setSelectionPath(model.getPageSelection());
         projectTree.addMouseListener(new TreeSelectionMouseListener());
 
-        Action[] treeActions = ActionsFactory.newStructureTreeActions(projectTree);
+        Action[] treeActions = ActionFactory.newStructureTreeActions(projectTree);
         projectTree.setContextMenu(MenuFactory.newPopupMenu(treeActions));
 
         contentEditorPane.setEditable(false);

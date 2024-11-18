@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
-public class ActionsFactory {
+public class ActionFactory {
     public static final String UPDATE_ACTION = "UPDATE_ACTION";
     public static final String PROJECT_NODE = ResourceLoader.getString("action.type.project");
     public static final String GROUP_NODE = ResourceLoader.getString("action.type.group");
@@ -18,11 +18,11 @@ public class ActionsFactory {
     }
 }
 
-abstract class AbstractCompositeAction extends AbstractAction {
+abstract class AbstractMenuAction extends AbstractAction {
     public static final String BASE_NAME = "BASE_NAME";
     public static final String TYPE_NAME = "TYPE_NAME";
 
-    public AbstractCompositeAction(String baseName){
+    public AbstractMenuAction(String baseName){
         super();
         putValue(BASE_NAME, baseName);
         addPropertyChangeListener(new UpdateListener());
@@ -32,7 +32,7 @@ abstract class AbstractCompositeAction extends AbstractAction {
 
     private class UpdateListener implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent event){
-            if (event.getPropertyName().equals(ActionsFactory.UPDATE_ACTION)){
+            if (event.getPropertyName().equals(ActionFactory.UPDATE_ACTION)){
                 actionUpdate();
                 putValue(NAME, getValue(BASE_NAME) + " " + getValue(TYPE_NAME));
             }
@@ -40,7 +40,7 @@ abstract class AbstractCompositeAction extends AbstractAction {
     }
 }
 
-class RenameTreeNodeAction extends AbstractCompositeAction {
+class RenameTreeNodeAction extends AbstractMenuAction {
     private StructureTree structureTree;
 
     public RenameTreeNodeAction(StructureTree tree){
@@ -51,7 +51,7 @@ class RenameTreeNodeAction extends AbstractCompositeAction {
     public void actionUpdate(){
         String actionType = structureTree.getSelectedNodeType();
         putValue(TYPE_NAME, actionType);
-        setEnabled(actionType != ActionsFactory.PROJECT_NODE);
+        setEnabled(actionType != ActionFactory.PROJECT_NODE);
     }
 
     public void actionPerformed(ActionEvent event){

@@ -27,7 +27,7 @@ class ActionPopupMenu extends JPopupMenu {
     @Override
     public void show(Component invoker, int x, int y){
         for (Action action : menuActions){
-            action.putValue(ActionsFactory.UPDATE_ACTION, null);
+            action.putValue(ActionFactory.UPDATE_ACTION, null);
         }
         SwingUtilities.invokeLater(() -> {super.show(invoker, x, y);});
     }

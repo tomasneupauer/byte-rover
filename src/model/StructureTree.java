@@ -56,13 +56,13 @@ public class StructureTree extends JTree {
         if (selectedNode instanceof ProjectTreeNode){
             ProjectTreeNode projectTreeNode = (ProjectTreeNode) selectedNode;
             if (projectTreeNode.getParent() == null){
-                return ActionsFactory.PROJECT_NODE;
+                return ActionFactory.PROJECT_NODE;
             }
             else if (projectTreeNode.isPage()){
-                return ActionsFactory.PAGE_NODE;
+                return ActionFactory.PAGE_NODE;
             }
             else {
-                return ActionsFactory.GROUP_NODE;
+                return ActionFactory.GROUP_NODE;
             }
         }
         return null;
