@@ -51,6 +51,23 @@ public class StructureTree extends JTree {
         return eventPath;
     }
 
+    public String getSelectedNodeType(){
+        Object selectedNode = getSelectionPath().getLastPathComponent();
+        if (selectedNode instanceof ProjectTreeNode){
+            ProjectTreeNode projectTreeNode = (ProjectTreeNode) selectedNode;
+            if (projectTreeNode.getParent() == null){
+                return ActionsFactory.PROJECT_NODE;
+            }
+            else if (projectTreeNode.isPage()){
+                return ActionsFactory.PAGE_NODE;
+            }
+            else {
+                return ActionsFactory.GROUP_NODE;
+            }
+        }
+        return null;
+    }
+
     private void disableRootCollapse(){
         addTreeWillExpandListener(new TreeWillExpandListener(){
             public void treeWillExpand(TreeExpansionEvent event){}

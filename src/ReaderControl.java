@@ -37,11 +37,8 @@ public class ReaderControl {
         projectTree.setSelectionPath(model.getPageSelection());
         projectTree.addMouseListener(new TreeSelectionMouseListener());
 
-        renameAction = new RenameTreeNodeAction(projectTree);
-        JPopupMenu menu = new JPopupMenu();
-        JMenuItem renameItem = new JMenuItem(renameAction);
-        menu.add(renameItem);
-        projectTree.setContextMenu(menu);
+        Action[] treeActions = ActionsFactory.newStructureTreeActions(projectTree);
+        projectTree.setContextMenu(MenuFactory.newPopupMenu(treeActions));
 
         contentEditorPane.setEditable(false);
         updatePageSelection();
@@ -55,20 +52,6 @@ public class ReaderControl {
         PageModel selectedPage = projectTreeModel.getSelectedPage();
         contentEditorPane.setContentType(selectedPage.getContentType());
         contentEditorPane.setText(selectedPage.readContent());
-    }
-
-    private class RenameTreeNodeAction extends AbstractAction {
-        private StructureTree structureTree;
-
-        public RenameTreeNodeAction(StructureTree tree){
-            super("Rename");
-            structureTree = tree;
-        }
-
-        public void actionPerformed(ActionEvent event){
-            TreePath eventPath = structureTree.getSelectionPath();
-            structureTree.startEditingAtPath(eventPath);
-        }
     }
 
     private class TreeSelectionMouseListener extends MouseAdapter {
