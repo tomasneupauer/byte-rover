@@ -17,7 +17,7 @@ import java.util.EventObject;
 public class StructureTree extends JTree {
     public StructureTree(){
         setEditable(true);
-        setRowHeight(22);
+        setRowHeight(25);
         disableRootCollapse();
         disableEditOnTripleClick();
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -52,7 +52,7 @@ public class StructureTree extends JTree {
     }
 
     public String getSelectedNodeType(){
-        Object selectedNode = getSelectionPath().getLastPathComponent();
+        Object selectedNode = getLastSelectedPathComponent();
         if (selectedNode instanceof ProjectTreeNode){
             ProjectTreeNode projectTreeNode = (ProjectTreeNode) selectedNode;
             if (projectTreeNode.getParent() == null){

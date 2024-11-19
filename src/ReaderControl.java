@@ -12,20 +12,23 @@ import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JMenuBar;
 
-import javax.swing.InputMap;
-import javax.swing.ActionMap;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
+//import javax.swing.InputMap;
+//import javax.swing.ActionMap;
+//import javax.swing.JComponent;
+//import javax.swing.KeyStroke;
 
 public class ReaderControl {
     private ReaderView readerView;
     private StructureTree projectTree;
     private ProjectTreeModel projectTreeModel;
     private JEditorPane contentEditorPane;
-    private Action renameAction;
+    private JMenuBar menuBar;
 
-    public ReaderControl(){
+    public ReaderControl(AppView appView){
+        menuBar = new JMenuBar();
+        appView.setJMenuBar(menuBar);
         readerView = new ReaderView();
         projectTree = (StructureTree) readerView.getStructureTree();
         contentEditorPane = readerView.getContentEditorPane();
@@ -38,7 +41,9 @@ public class ReaderControl {
         projectTree.addMouseListener(new TreeSelectionMouseListener());
 
         Action[] treeActions = ActionFactory.newStructureTreeActions(projectTree);
+        Action editMenuAction = ActionFactory.newMenuAction(ResourceLoader.getString("action.menu.edit"));
         projectTree.setContextMenu(MenuFactory.newPopupMenu(treeActions));
+        menuBar.add(MenuFactory.newMenu(treeActions, editMenuAction));
 
         contentEditorPane.setEditable(false);
         updatePageSelection();

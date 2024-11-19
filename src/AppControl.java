@@ -1,17 +1,16 @@
 package org.berandev.byterover;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import javax.swing.JFrame;
 
 public class AppControl {
-    private JFrame appView;
+    private AppView appView;
     private ProjectTreeModel projectModel;
     private ReaderControl readerControl;
 
     public AppControl(){
         FlatLightLaf.setup();
         appView = new AppView();
-        readerControl = new ReaderControl();
+        readerControl = new ReaderControl(appView);
         initControl();
     }
 

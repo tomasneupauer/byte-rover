@@ -16,15 +16,17 @@ public class ActionFactory {
         Action[] actions = {new RenameTreeNodeAction(tree)};
         return actions;
     }
+
+    public static Action newMenuAction(String name){
+        return new AbstractAction(name){
+            public void actionPerformed(ActionEvent event) {};
+        };
+    }
 }
 
 abstract class AbstractMenuAction extends AbstractAction {
-    public static final String BASE_NAME = "BASE_NAME";
-    public static final String TYPE_NAME = "TYPE_NAME";
-
-    public AbstractMenuAction(String baseName){
+    public AbstractMenuAction(){
         super();
-        putValue(BASE_NAME, baseName);
         addPropertyChangeListener(new UpdateListener());
     }
 
@@ -34,7 +36,6 @@ abstract class AbstractMenuAction extends AbstractAction {
         public void propertyChange(PropertyChangeEvent event){
             if (event.getPropertyName().equals(ActionFactory.UPDATE_ACTION)){
                 actionUpdate();
-                putValue(NAME, getValue(BASE_NAME) + " " + getValue(TYPE_NAME));
             }
         }
     }
@@ -42,16 +43,24 @@ abstract class AbstractMenuAction extends AbstractAction {
 
 class RenameTreeNodeAction extends AbstractMenuAction {
     private StructureTree structureTree;
+    private String baseName;
 
     public RenameTreeNodeAction(StructureTree tree){
-        super(ResourceLoader.getString("action.base.rename"));
+        super();
         structureTree = tree;
+        baseName = ResourceLoader.getString("action.base.rename");
     }
 
     public void actionUpdate(){
-        String actionType = structureTree.getSelectedNodeType();
-        putValue(TYPE_NAME, actionType);
-        setEnabled(actionType != ActionFactory.PROJECT_NODE);
+        if (structureTree.getSelectionCount() > 0){
+            String actionType = structureTree.getSelectedNodeType();
+            putValue(NAME, baseName + " " + actionType);
+            setEnabled(true);
+        }
+        else {
+            putValue(NAME, baseName);
+            setEnabled(false);
+        }
     }
 
     public void actionPerformed(ActionEvent event){
