@@ -31,7 +31,7 @@ public class ArchiveImportHandler {
     private static ProjectTreeModel buildProjectTreeModel(Element projectRoot){
         projectModel = new ProjectTreeModel(buildProjectTreeNode(projectRoot));
         if (defaultNode != null){
-            projectModel.setPageSelection(defaultNode.getPath());
+            projectModel.setDefaultPath(defaultNode.getPath());
         }
         return projectModel;
     }

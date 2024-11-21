@@ -5,29 +5,38 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeNode;
 
 public class ProjectTreeModel extends DefaultTreeModel {
-    private TreePath pageSelection;
+    private TreePath defaultPath;
+    private TreePath currentPath;
 
     public ProjectTreeModel(TreeNode root){
         super(root);
     }
 
-    public void setPageSelection(TreeNode[] path){
-        setPageSelection(new TreePath(path));
+    public void setDefaultPath(TreeNode[] path){
+        setDefaultPath(new TreePath(path));
     }
 
-    public void setPageSelection(TreePath path){
-        pageSelection = path;
+    public void setDefaultPath(TreePath path){
+        defaultPath = path;
     }
 
-    public TreePath getPageSelection(){
-        return pageSelection;
+    public void setCurrentPath(TreePath path){
+        currentPath = path;
     }
 
-    public PageModel getSelectedPage(){
-        if (pageSelection == null){
+    public TreePath getDefaultPath(){
+        return defaultPath;
+    }
+
+    public TreePath getCurrentPath(){
+        return currentPath;
+    }
+
+    public PageModel getCurrentPage(){
+        if (currentPath == null){
             return new PageModel();
         }
-        ProjectTreeNode selectedNode = (ProjectTreeNode) pageSelection.getLastPathComponent();
-        return selectedNode.getPageModel();
+        Object currentNode = currentPath.getLastPathComponent();
+        return ((ProjectTreeNode) currentNode).getPageModel();
     }
 }

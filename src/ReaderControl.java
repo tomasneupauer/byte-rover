@@ -22,7 +22,7 @@ import javax.swing.JMenuBar;
 public class ReaderControl {
     private ReaderView readerView;
     private StructureTree projectTree;
-    private ProjectTreeModel projectTreeModel;
+    private ProjectTreeModel treeModel;
     private JEditorPane contentEditorPane;
     private JMenuBar menuBar;
 
@@ -35,9 +35,10 @@ public class ReaderControl {
     }
 
     public void initControl(ProjectTreeModel model){
-        projectTreeModel = model;
-        projectTree.setModel(model);
-        projectTree.setSelectionPath(model.getPageSelection());
+        treeModel = model;
+        treeModel.setCurrentPath(treeModel.getDefaultPath());
+        projectTree.setModel(treeModel);
+        projectTree.setSelectionPath(model.getCurrentPath());
         projectTree.addMouseListener(new TreeSelectionMouseListener());
 
         Action[] treeActions = ActionFactory.newStructureTreeActions(projectTree);
@@ -54,7 +55,7 @@ public class ReaderControl {
     }
 
     private void updatePageSelection(){
-        PageModel selectedPage = projectTreeModel.getSelectedPage();
+        PageModel selectedPage = treeModel.getCurrentPage();
         contentEditorPane.setContentType(selectedPage.getContentType());
         contentEditorPane.setText(selectedPage.readContent());
     }
@@ -71,7 +72,7 @@ public class ReaderControl {
             }
             ProjectTreeNode eventNode = (ProjectTreeNode) eventPath.getLastPathComponent();
             if (eventNode.isPage()){
-                projectTreeModel.setPageSelection(eventPath);
+                treeModel.setCurrentPath(eventPath);
                 updatePageSelection();
             }
         }
