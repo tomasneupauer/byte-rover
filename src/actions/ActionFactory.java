@@ -13,7 +13,10 @@ public class ActionFactory {
     public static final String PAGE_NODE = ResourceLoader.getString("action.type.page");
 
     public static Action[] newStructureTreeActions(StructureTree tree){
-        Action[] actions = {new RenameTreeNodeAction(tree)};
+        Action[] actions = {
+            new RenameTreeNodeAction(tree),
+            new DeleteTreeNodeAction(tree)
+        };
         return actions;
     }
 
@@ -24,8 +27,8 @@ public class ActionFactory {
     }
 }
 
-abstract class AbstractMenuAction extends AbstractAction {
-    public AbstractMenuAction(){
+abstract class AbstractItemAction extends AbstractAction {
+    public AbstractItemAction(){
         super();
         addPropertyChangeListener(new UpdateListener());
     }
@@ -41,7 +44,7 @@ abstract class AbstractMenuAction extends AbstractAction {
     }
 }
 
-class RenameTreeNodeAction extends AbstractMenuAction {
+class RenameTreeNodeAction extends AbstractItemAction {
     private StructureTree structureTree;
     private String baseName;
 
@@ -68,3 +71,44 @@ class RenameTreeNodeAction extends AbstractMenuAction {
     }
 }
 
+class DeleteTreeNodeAction extends AbstractItemAction {
+    private StructureTree structureTree;
+    private String baseName;
+
+    public DeleteTreeNodeAction(StructureTree tree){
+        super();
+        structureTree = tree;
+        baseName = ResourceLoader.getString("action.base.delete");
+    }
+
+    public void actionUpdate(){
+        if (structureTree.getSelectionCount() > 0){
+            String actionType = structureTree.getSelectedNodeType();
+            putValue(NAME, baseName + " " + actionType);
+            setEnabled(true);
+        }
+        else {
+            putValue(NAME, baseName);
+            setEnabled(false);
+        }
+    }
+
+    public void actionPerformed(ActionEvent event){
+        
+    }
+}
+
+class EditSelectedNodeAction extends AbstractItemAction {
+    private StructureTree structureTree;
+
+    public EditSelectedNodeAction(StructureTree tree){
+        super();
+        structureTree = tree;
+    }
+
+    public void actionUpdate(){
+        setEnabled(structureTree.getSelectionCount() > 0);
+    }
+
+    public void actionPerformed(ActionEvent event){}
+}

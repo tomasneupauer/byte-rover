@@ -59,8 +59,8 @@ class ActionMenu extends JMenu {
                 action.putValue(ActionFactory.UPDATE_ACTION, null);
             }
         }
-        public void menuDeselected(MenuEvent event) {}
-        public void menuCanceled(MenuEvent event) {}
+        public void menuDeselected(MenuEvent event){}
+        public void menuCanceled(MenuEvent event){}
     }
 }
 
