@@ -18,6 +18,7 @@ public class StructureTree extends JTree {
     public StructureTree(){
         setEditable(true);
         setRowHeight(25);
+        changeCurrentOnDoubleClick();
         disableRootCollapse();
         disableEditOnTripleClick();
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -51,21 +52,31 @@ public class StructureTree extends JTree {
         return eventPath;
     }
 
-    public String getSelectedNodeType(){
-        Object selectedNode = getLastSelectedPathComponent();
-        if (selectedNode instanceof ProjectTreeNode){
-            ProjectTreeNode projectTreeNode = (ProjectTreeNode) selectedNode;
-            if (projectTreeNode.isRoot()){
-                return ActionFactory.PROJECT_NODE;
+    public StructureTreeNode getSelectedNode(){
+        return (StructureTreeNode) getLastSelectedPathComponent();
+    }
+
+    private void changeCurrentOnDoubleClick(){
+        addMouseListener(new MouseAdapter(){
+            @Override
+            public void mousePressed(MouseEvent event){
+                if (event.getButton() != MouseEvent.BUTTON1){
+                    return;
+                }
+                if (event.getClickCount() != 2){
+                    return;
+                }
+                TreePath eventPath = getPathForMouseEvent(event);
+                if (eventPath == null){
+                    return;
+                }
+                Object eventObject = eventPath.getLastPathComponent();
+                StructureTreeNode eventNode = (StructureTreeNode) eventObject;
+                if (eventNode.isShowable()){
+                    ((StructureTreeModel) getModel()).setCurrentNode(eventNode);
+                }
             }
-            else if (projectTreeNode.isPage()){
-                return ActionFactory.PAGE_NODE;
-            }
-            else {
-                return ActionFactory.GROUP_NODE;
-            }
-        }
-        return null;
+        });
     }
 
     private void disableRootCollapse(){

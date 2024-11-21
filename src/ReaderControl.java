@@ -2,10 +2,7 @@ package org.berandev.byterover;
 
 import javax.swing.JEditorPane;
 import javax.swing.JTree;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JPopupMenu;
@@ -19,10 +16,10 @@ import javax.swing.JMenuBar;
 //import javax.swing.JComponent;
 //import javax.swing.KeyStroke;
 
-public class ReaderControl {
+public class ReaderControl implements ActionListener {
     private ReaderView readerView;
-    private StructureTree projectTree;
-    private ProjectTreeModel treeModel;
+    private StructureTree structureTree;
+    private StructureTreeModel treeModel;
     private JEditorPane contentEditorPane;
     private JMenuBar menuBar;
 
@@ -30,52 +27,39 @@ public class ReaderControl {
         menuBar = new JMenuBar();
         appView.setJMenuBar(menuBar);
         readerView = new ReaderView();
-        projectTree = (StructureTree) readerView.getStructureTree();
+        structureTree = (StructureTree) readerView.getStructureTree();
         contentEditorPane = readerView.getContentEditorPane();
     }
 
-    public void initControl(ProjectTreeModel model){
+    public void initControl(StructureTreeModel model){
         treeModel = model;
-        treeModel.setCurrentPath(treeModel.getDefaultPath());
-        projectTree.setModel(treeModel);
-        projectTree.setSelectionPath(model.getCurrentPath());
-        projectTree.addMouseListener(new TreeSelectionMouseListener());
+        treeModel.setCurrentNode(treeModel.getDefaultNode());
+        treeModel.addCurrentNodeListener(this);
+        structureTree.setModel(treeModel);
+        structureTree.setSelectionPath(treeModel.getCurrentPath());
 
-        Action[] treeActions = ActionFactory.newStructureTreeActions(projectTree);
+        Action[] treeActions = ActionFactory.newStructureTreeActions(structureTree);
         Action editMenuAction = ActionFactory.newMenuAction(ResourceLoader.getString("action.menu.edit"));
-        projectTree.setContextMenu(MenuFactory.newPopupMenu(treeActions));
+        structureTree.setContextMenu(MenuFactory.newPopupMenu(treeActions));
         menuBar.add(MenuFactory.newMenu(treeActions, editMenuAction));
 
         contentEditorPane.setEditable(false);
-        updatePageSelection();
+        updatePageEditor();
     }
 
     public ReaderView getView(){
         return readerView;
     }
 
-    private void updatePageSelection(){
-        PageModel selectedPage = treeModel.getCurrentPage();
-        contentEditorPane.setContentType(selectedPage.getContentType());
-        contentEditorPane.setText(selectedPage.readContent());
+    public void actionPerformed(ActionEvent event){
+        updatePageEditor();
     }
 
-    private class TreeSelectionMouseListener extends MouseAdapter {
-        @Override
-        public void mousePressed(MouseEvent event){
-            if (event.getButton() != MouseEvent.BUTTON1 || event.getClickCount() != 2){
-                return;
-            }
-            TreePath eventPath = projectTree.getPathForMouseEvent(event);
-            if (eventPath == null){
-                return;
-            }
-            ProjectTreeNode eventNode = (ProjectTreeNode) eventPath.getLastPathComponent();
-            if (eventNode.isPage()){
-                treeModel.setCurrentPath(eventPath);
-                updatePageSelection();
-            }
-        }
+    private void updatePageEditor(){
+        ProjectTreeNode selectedNode = (ProjectTreeNode) treeModel.getCurrentNode();
+        PageModel selectedPage = selectedNode.getPageModel();
+        contentEditorPane.setContentType(selectedPage.getContentType());
+        contentEditorPane.setText(selectedPage.readContent());
     }
 }
 

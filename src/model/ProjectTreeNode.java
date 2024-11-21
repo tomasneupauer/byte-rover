@@ -2,7 +2,7 @@ package org.berandev.byterover;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public class ProjectTreeNode extends DefaultMutableTreeNode {
+public class ProjectTreeNode extends DefaultMutableTreeNode implements StructureTreeNode {
     private PageModel pageModel;
 
     public ProjectTreeNode(String name){
@@ -17,7 +17,17 @@ public class ProjectTreeNode extends DefaultMutableTreeNode {
         return pageModel;
     }
 
-    public boolean isPage(){
+    public String getType(){
+        if (isRoot()){
+            return ResourceLoader.getString("model.node.project");
+        }
+        if (!isShowable()){
+            return ResourceLoader.getString("model.node.group");
+        }
+        return ResourceLoader.getString("model.node.page");
+    }
+
+    public boolean isShowable(){
         return pageModel != null;
     }
 }

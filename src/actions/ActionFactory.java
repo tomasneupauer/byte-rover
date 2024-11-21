@@ -9,9 +9,6 @@ import java.beans.PropertyChangeEvent;
 public class ActionFactory {
     public static final String INVOKE_UPDATE = "INVOKE_UPDATE";
     public static final String VISIBLE = "VISIBLE";
-    public static final String PROJECT_NODE = ResourceLoader.getString("action.type.project");
-    public static final String GROUP_NODE = ResourceLoader.getString("action.type.group");
-    public static final String PAGE_NODE = ResourceLoader.getString("action.type.page");
 
     public static Action[] newStructureTreeActions(StructureTree tree){
         Action[] actions = {
@@ -58,8 +55,7 @@ class RenameTreeNodeAction extends AbstractItemAction {
 
     public void actionUpdate(){
         if (structureTree.getSelectionCount() > 0){
-            String actionType = structureTree.getSelectedNodeType();
-            putValue(NAME, baseName + " " + actionType);
+            putValue(NAME, baseName + " " + structureTree.getSelectedNode().getType());
             setEnabled(true);
         }
         else {
@@ -75,25 +71,22 @@ class RenameTreeNodeAction extends AbstractItemAction {
 
 class DeleteTreeNodeAction extends AbstractItemAction {
     private StructureTree structureTree;
-    private ProjectTreeModel treeModel;
+    private StructureTreeModel treeModel;
     private String baseName;
 
     public DeleteTreeNodeAction(StructureTree tree){
         super();
         structureTree = tree;
-        treeModel = (ProjectTreeModel) tree.getModel();
+        treeModel = (StructureTreeModel) tree.getModel();
         baseName = ResourceLoader.getString("action.base.delete");
     }
 
     public void actionUpdate(){
         if (structureTree.getSelectionCount() > 0){
-            Object selectedObject = structureTree.getLastSelectedPathComponent();
-            ProjectTreeNode selectedNode = (ProjectTreeNode) selectedObject;
+            StructureTreeNode selectedNode = structureTree.getSelectedNode();
             putValue(ActionFactory.VISIBLE, selectedNode.isRoot());
-            boolean isDefault = treeModel.getDefaultPath().equals(structureTree.getSelectionPath());
-            setEnabled(selectedNode.isLeaf() && !isDefault);
-            String actionType = structureTree.getSelectedNodeType();
-            putValue(NAME, baseName + " " + actionType);
+            putValue(NAME, baseName + " " + selectedNode.getType());
+            setEnabled(selectedNode.isLeaf() && !treeModel.isDefault(selectedNode));
         }
         else {
             putValue(NAME, baseName);
@@ -102,11 +95,12 @@ class DeleteTreeNodeAction extends AbstractItemAction {
     }
 
     public void actionPerformed(ActionEvent event){
-        Object selectedObject = structureTree.getLastSelectedPathComponent();
-        treeModel.removeNodeFromParent((ProjectTreeNode) selectedObject);
-        if (treeModel.getCurrentPath().equals(structureTree.getSelectionPath())){
-            treeModel.setCurrentPath(treeModel.getDefaultPath());
+        StructureTreeNode selectedNode = structureTree.getSelectedNode();
+        if (treeModel.isCurrent(selectedNode)){
+            treeModel.setCurrentNode(treeModel.getDefaultNode());
+            structureTree.setSelectionPath(treeModel.getCurrentPath());
         }
+        treeModel.removeNodeFromParent(selectedNode);
     }
 }
 

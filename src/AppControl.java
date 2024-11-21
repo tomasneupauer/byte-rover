@@ -4,7 +4,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 
 public class AppControl {
     private AppView appView;
-    private ProjectTreeModel projectModel;
+    private StructureTreeModel projectModel;
     private ReaderControl readerControl;
 
     public AppControl(){

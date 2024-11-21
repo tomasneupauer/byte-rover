@@ -11,10 +11,10 @@ import java.util.List;
 
 public class ArchiveImportHandler {
     private static ProjectArchive projectArchive;
-    private static ProjectTreeModel projectModel;
-    private static ProjectTreeNode defaultNode;
+    private static StructureTreeModel projectModel;
+    private static StructureTreeNode defaultNode;
 
-    public static ProjectTreeModel importArchive(String archivePath) throws Exception {
+    public static StructureTreeModel importArchive(String archivePath) throws Exception {
         projectArchive = ZipArchiveHandler.loadZipArchive(archivePath);
         String descriptorFilename = ResourceLoader.getFilename("projectDescriptor");
         if (!projectArchive.containsEntry(descriptorFilename)){
@@ -28,15 +28,13 @@ public class ArchiveImportHandler {
         return buildProjectTreeModel(projectDescriptor.getDocumentElement());
     }
 
-    private static ProjectTreeModel buildProjectTreeModel(Element projectRoot){
-        projectModel = new ProjectTreeModel(buildProjectTreeNode(projectRoot));
-        if (defaultNode != null){
-            projectModel.setDefaultPath(defaultNode.getPath());
-        }
+    private static StructureTreeModel buildProjectTreeModel(Element projectRoot){
+        projectModel = new StructureTreeModel(buildProjectTreeNode(projectRoot));
+        projectModel.setDefaultNode(defaultNode);
         return projectModel;
     }
 
-    private static ProjectTreeNode buildProjectTreeNode(Element element){
+    private static StructureTreeNode buildProjectTreeNode(Element element){
         ProjectTreeNode treeNode = new ProjectTreeNode(element.getAttribute("name"));
         if (element.getNodeName().equals("page")){
             if (element.getAttribute("default").equals("true")){
