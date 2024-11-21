@@ -55,7 +55,7 @@ public class StructureTree extends JTree {
         Object selectedNode = getLastSelectedPathComponent();
         if (selectedNode instanceof ProjectTreeNode){
             ProjectTreeNode projectTreeNode = (ProjectTreeNode) selectedNode;
-            if (projectTreeNode.getParent() == null){
+            if (projectTreeNode.isRoot()){
                 return ActionFactory.PROJECT_NODE;
             }
             else if (projectTreeNode.isPage()){

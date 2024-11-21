@@ -38,7 +38,7 @@ class ActionPopupMenu extends JPopupMenu {
     @Override
     public void show(Component invoker, int x, int y){
         for (Action action : itemActions){
-            action.putValue(ActionFactory.UPDATE_ACTION, null);
+            action.putValue(ActionFactory.INVOKE_UPDATE, null);
         }
         SwingUtilities.invokeLater(() -> {super.show(invoker, x, y);});
     }
@@ -56,7 +56,7 @@ class ActionMenu extends JMenu {
     private class UpdateListener implements MenuListener {
         public void menuSelected(MenuEvent event){
             for (Action action : itemActions){
-                action.putValue(ActionFactory.UPDATE_ACTION, null);
+                action.putValue(ActionFactory.INVOKE_UPDATE, null);
             }
         }
         public void menuDeselected(MenuEvent event){}
