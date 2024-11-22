@@ -16,5 +16,9 @@ public class ResourceLoader {
     public static String getFilename(String key){
         return getString("filename." + key);
     }
+    
+    public static String getHint(String key){
+        return getString("hint." + key);
+    }
 }
 

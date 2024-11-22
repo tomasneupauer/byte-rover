@@ -6,14 +6,12 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
-public class ActionFactory {
-    public static final String INVOKE_UPDATE = "INVOKE_UPDATE";
-    public static final String VISIBLE = "VISIBLE";
-
-    public static Action[] newStructureTreeActions(StructureTree tree){
-        Action[] actions = {
-            new RenameTreeNodeAction(tree),
-            new DeleteTreeNodeAction(tree)
+public class ActionFactory implements ActionKeys {
+public static Action[] newStructureTreeActions(StructureTree tree){
+    Action[] actions = {
+        new RenameTreeNodeAction(tree),
+        new DeleteTreeNodeAction(tree),
+        new SetDefaultTreeNodeAction(tree)
         };
         return actions;
     }
@@ -25,10 +23,16 @@ public class ActionFactory {
     }
 }
 
-abstract class AbstractItemAction extends AbstractAction {
+interface ActionKeys {
+    String INVOKE_UPDATE = "INVOKE_UPDATE";
+    String VISIBLE = "VISIBLE";
+    String SEPARATED = "SEPARATED";
+}
+
+abstract class AbstractItemAction extends AbstractAction implements ActionKeys {
     public AbstractItemAction(){
-        super();
-        putValue(ActionFactory.VISIBLE, true);
+        putValue(VISIBLE, true);
+        putValue(SEPARATED, false);
         addPropertyChangeListener(new UpdateListener());
     }
 
@@ -36,7 +40,7 @@ abstract class AbstractItemAction extends AbstractAction {
 
     private class UpdateListener implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent event){
-            if (event.getPropertyName().equals(ActionFactory.INVOKE_UPDATE)){
+            if (event.getPropertyName().equals(INVOKE_UPDATE)){
                 actionUpdate();
             }
         }
@@ -45,21 +49,20 @@ abstract class AbstractItemAction extends AbstractAction {
 
 class RenameTreeNodeAction extends AbstractItemAction {
     private StructureTree structureTree;
-    private String baseName;
 
     public RenameTreeNodeAction(StructureTree tree){
-        super();
         structureTree = tree;
-        baseName = ResourceLoader.getString("action.base.rename");
+        putValue(NAME, ResourceLoader.getString("action.renameBase"));
     }
 
     public void actionUpdate(){
         if (structureTree.getSelectionCount() > 0){
-            putValue(NAME, baseName + " " + structureTree.getSelectedNode().getType());
+            StructureTreeNode selectedNode = structureTree.getSelectedNode();
+            setTypeName(selectedNode.getType());
             setEnabled(true);
         }
         else {
-            putValue(NAME, baseName);
+            putValue(NAME, ResourceLoader.getString("action.renameBase"));
             setEnabled(false);
         }
     }
@@ -67,29 +70,46 @@ class RenameTreeNodeAction extends AbstractItemAction {
     public void actionPerformed(ActionEvent event){
         structureTree.startEditingAtPath(structureTree.getSelectionPath());
     }
+
+    private void setTypeName(int type){
+        switch (type){
+            case StructureTreeNode.PROJECT_NODE:
+                putValue(NAME, ResourceLoader.getString("action.renameProject"));
+                break;
+            case StructureTreeNode.GROUP_NODE:
+                putValue(NAME, ResourceLoader.getString("action.renameGroup"));
+                break;
+            case StructureTreeNode.PAGE_NODE:
+                putValue(NAME, ResourceLoader.getString("action.renamePage"));
+                break;
+            default:
+                putValue(NAME, ResourceLoader.getString("action.renameBase"));
+        }
+    }
 }
 
 class DeleteTreeNodeAction extends AbstractItemAction {
     private StructureTree structureTree;
     private StructureTreeModel treeModel;
-    private String baseName;
 
     public DeleteTreeNodeAction(StructureTree tree){
-        super();
         structureTree = tree;
         treeModel = (StructureTreeModel) tree.getModel();
-        baseName = ResourceLoader.getString("action.base.delete");
+        putValue(NAME, ResourceLoader.getString("action.deleteBase"));
+        putValue(SEPARATED, true);
     }
 
     public void actionUpdate(){
         if (structureTree.getSelectionCount() > 0){
             StructureTreeNode selectedNode = structureTree.getSelectedNode();
-            putValue(ActionFactory.VISIBLE, selectedNode.isRoot());
-            putValue(NAME, baseName + " " + selectedNode.getType());
-            setEnabled(selectedNode.isLeaf() && !treeModel.isDefault(selectedNode));
+            putValue(VISIBLE, !selectedNode.isRoot());
+            setTypeName(selectedNode.getType());
+            setState(selectedNode.isLeaf(), treeModel.isDefault(selectedNode));
         }
         else {
-            putValue(NAME, baseName);
+            putValue(NAME, ResourceLoader.getString("action.deleteBase"));
+            putValue(SHORT_DESCRIPTION, "");
+            putValue(VISIBLE, true);
             setEnabled(false);
         }
     }
@@ -101,6 +121,73 @@ class DeleteTreeNodeAction extends AbstractItemAction {
             structureTree.setSelectionPath(treeModel.getCurrentPath());
         }
         treeModel.removeNodeFromParent(selectedNode);
+    }
+
+    private void setTypeName(int type){
+        switch (type){
+            case StructureTreeNode.PROJECT_NODE:
+                putValue(NAME, ResourceLoader.getString("action.deleteProject"));
+                break;
+            case StructureTreeNode.GROUP_NODE:
+                putValue(NAME, ResourceLoader.getString("action.deleteGroup"));
+                break;
+            case StructureTreeNode.PAGE_NODE:
+                putValue(NAME, ResourceLoader.getString("action.deletePage"));
+                break;
+            default:
+                putValue(NAME, ResourceLoader.getString("action.deleteBase"));
+        }
+    }
+
+    private void setState(boolean isLeaf, boolean isDefault){
+        setEnabled(isLeaf && !isDefault);
+        String description = "";
+        if (!isLeaf){
+            description = ResourceLoader.getHint("groupNotEmpty");
+        }
+        if (isDefault){
+            description = ResourceLoader.getHint("currentlyDefault");
+        }
+        putValue(SHORT_DESCRIPTION, description);
+    }
+}
+
+class SetDefaultTreeNodeAction extends AbstractItemAction {
+    private StructureTree structureTree;
+    private StructureTreeModel treeModel;
+
+    public SetDefaultTreeNodeAction(StructureTree tree){
+        structureTree = tree;
+        treeModel = (StructureTreeModel) tree.getModel();
+        putValue(NAME, ResourceLoader.getString("action.setDefault"));
+    }
+
+    public void actionUpdate(){
+        if (structureTree.getSelectionCount() > 0){
+            StructureTreeNode selectedNode = structureTree.getSelectedNode();
+            putValue(VISIBLE, selectedNode.isShowable());
+            setState(!treeModel.isDefault(selectedNode));
+        }
+        else {
+            putValue(SHORT_DESCRIPTION, "");
+            putValue(VISIBLE, true);
+            setEnabled(false);
+        }
+    }
+
+    public void actionPerformed(ActionEvent event){
+        StructureTreeNode selectedNode = structureTree.getSelectedNode();
+        treeModel.setDefaultNode(selectedNode);
+    }
+
+    private void setState(boolean enabled){
+        setEnabled(enabled);
+        if (!enabled){
+            putValue(SHORT_DESCRIPTION, ResourceLoader.getHint("currentlyDefault"));
+        }
+        else {
+            putValue(SHORT_DESCRIPTION, "");
+        }
     }
 }
 
