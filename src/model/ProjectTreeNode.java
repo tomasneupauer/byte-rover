@@ -17,14 +17,14 @@ public class ProjectTreeNode extends DefaultMutableTreeNode implements Structure
         return pageModel;
     }
 
-    public String getType(){
+    public int getType(){
         if (isRoot()){
-            return ResourceLoader.getString("model.node.project");
+            return PROJECT_NODE;
         }
         if (!isShowable()){
-            return ResourceLoader.getString("model.node.group");
+            return GROUP_NODE;
         }
-        return ResourceLoader.getString("model.node.page");
+        return PAGE_NODE;
     }
 
     public boolean isShowable(){
