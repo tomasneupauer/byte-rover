@@ -20,5 +20,9 @@ public class ResourceLoader {
     public static String getHint(String key){
         return getString("hint." + key);
     }
+
+    public static String getPlaceholder(String key){
+        return getString("placeholder." + key);
+    }
 }
 
