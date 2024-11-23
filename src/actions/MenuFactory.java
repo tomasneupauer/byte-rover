@@ -1,6 +1,5 @@
 package org.berandev.byterover;
 
-import javax.swing.SwingUtilities;
 import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JMenu;
@@ -11,22 +10,24 @@ import javax.swing.event.MenuEvent;
 import java.awt.Component;
 
 public class MenuFactory {
-    public static JPopupMenu newPopupMenu(Action[] items){
+    public static JPopupMenu newPopupMenu(MenuItemAction[] items){
         JPopupMenu actionPopupMenu = new ActionPopupMenu();
-        for (Action action : items){
+        for (MenuItemAction action : items){
             actionPopupMenu.add(new JMenuItem(action));
-            Boolean separated = (Boolean) action.getValue(ActionFactory.SEPARATED);
-            if (separated.booleanValue()){
+            if (action.isSeparated()){
                 actionPopupMenu.addSeparator();
             }
         }
         return actionPopupMenu;
     }
 
-    public static JMenu newMenu(Action[] items, Action menu){
+    public static JMenu newMenu(MenuItemAction[] items, Action menu){
         JMenu actionMenu = new ActionMenu(menu);
-        for (Action action : items){
+        for (MenuItemAction action : items){
             actionMenu.add(new JMenuItem(action));
+            if (action.isSeparated()){
+                actionMenu.addSeparator();
+            }
         }
         return actionMenu;
     }
@@ -44,10 +45,9 @@ public class MenuFactory {
     }
 
     private static void updateMenuItem(JMenuItem item){
-        Action action = item.getAction();
-        action.putValue(ActionFactory.INVOKE_UPDATE, null);
-        Boolean visible = (Boolean) action.getValue(ActionFactory.VISIBLE);
-        item.setVisible(visible.booleanValue());
+        MenuItemAction action = (MenuItemAction) item.getAction();
+        action.actionUpdate();
+        item.setVisible(action.isVisible());
     }
 }
 
@@ -55,7 +55,7 @@ class ActionPopupMenu extends JPopupMenu {
     @Override
     public void show(Component invoker, int x, int y){
         MenuFactory.updateMenuElements(this);
-        SwingUtilities.invokeLater(() -> {super.show(invoker, x, y);});
+        super.show(invoker, x, y);
     }
 }
 

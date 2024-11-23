@@ -31,11 +31,7 @@ public class StructureTree extends JTree {
                 if (event.getButton() != MouseEvent.BUTTON3){
                     return;
                 }
-                TreePath eventPath = getPathForMouseEvent(event);
-                if (eventPath == null){
-                    return;
-                }
-                setSelectionPath(eventPath);
+                setSelectionPath(getPathForMouseEvent(event));
                 menu.show(StructureTree.this, event.getX(), event.getY());
             }
         });
@@ -46,14 +42,19 @@ public class StructureTree extends JTree {
         Rectangle nodeBounds = getPathBounds(eventPath);
         nodeBounds.setLocation(1, (int) nodeBounds.getY());
         nodeBounds.setSize(getWidth() - 2, (int) nodeBounds.getHeight());
-        if (!nodeBounds.contains(event.getPoint())){
-            return null;
-        }
-        return eventPath;
+        return nodeBounds.contains(event.getPoint()) ? eventPath : null;
     }
 
-    public StructureTreeNode getSelectedNode(){
-        return (StructureTreeNode) getLastSelectedPathComponent();
+    public TreePath getContextPath(){
+        if (getSelectionCount() == 0){
+            StructureTreeNode rootNode = (StructureTreeNode) getModel().getRoot();
+            return new TreePath(rootNode.getPath());
+        }
+        return getSelectionPath();
+    }
+
+    public StructureTreeNode getContextNode(){
+        return (StructureTreeNode) getContextPath().getLastPathComponent();
     }
 
     private void changeCurrentOnDoubleClick(){

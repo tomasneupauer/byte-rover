@@ -38,7 +38,7 @@ public class ReaderControl implements ActionListener {
         structureTree.setModel(treeModel);
         structureTree.setSelectionPath(treeModel.getCurrentPath());
 
-        Action[] treeActions = ActionFactory.newStructureTreeActions(structureTree);
+        MenuItemAction[] treeActions = ActionFactory.newStructureTreeActions(structureTree);
         Action editMenuAction = ActionFactory.newMenuAction(ResourceLoader.getString("action.menu.edit"));
         structureTree.setContextMenu(MenuFactory.newPopupMenu(treeActions));
         menuBar.add(MenuFactory.newMenu(treeActions, editMenuAction));
