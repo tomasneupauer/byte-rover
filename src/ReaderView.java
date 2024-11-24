@@ -7,8 +7,8 @@ import javax.swing.JTree;
 
 public class ReaderView extends JPanel{
     private JPanel controlPanel;
-    private JPanel circuitPanel;
-    private JScrollPane circuitScrollPane;
+    //private JPanel circuitPanel;
+    //private JScrollPane circuitScrollPane;
     private JEditorPane contentEditorPane;
     private JScrollPane contentScrollPane;
     private JTree structureTree;
@@ -16,8 +16,8 @@ public class ReaderView extends JPanel{
 
     public ReaderView(){
         controlPanel = new JPanel();
-        circuitPanel = new JPanel();
-        circuitScrollPane = new JScrollPane(circuitPanel);
+        //circuitPanel = new JPanel();
+        //circuitScrollPane = new JScrollPane(circuitPanel);
         contentEditorPane = new JEditorPane();
         contentScrollPane = new JScrollPane(contentEditorPane);
         structureTree = new StructureTree();
@@ -27,7 +27,7 @@ public class ReaderView extends JPanel{
 
     private void initComponents(){
         add(controlPanel);
-        add(circuitScrollPane);
+        //add(circuitScrollPane);
         add(contentScrollPane);
         controlPanel.add(structureScrollPane);
     }

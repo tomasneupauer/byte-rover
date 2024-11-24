@@ -5,7 +5,7 @@ import java.awt.EventQueue;
 public class ByteRover {
     public static void main(String[] args){
         EventQueue.invokeLater(() -> {
-            new AppControl();
+            new AppControl().initControl();
         });
     }
 }
