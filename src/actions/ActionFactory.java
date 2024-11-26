@@ -7,8 +7,8 @@ import java.awt.event.ActionEvent;
 public class ActionFactory {
     public static MenuItemAction[] newStructureTreeActions(StructureTree tree){
         MenuItemAction[] actions = {
-            new CreateNewPageAction(tree),
-            new CreateNewGroupAction(tree),
+            new CreatePageNodeAction(tree),
+            new CreateGroupNodeAction(tree),
             new SetDefaultTreeNodeAction(tree),
             new RenameTreeNodeAction(tree),
             new DeleteTreeNodeAction(tree)

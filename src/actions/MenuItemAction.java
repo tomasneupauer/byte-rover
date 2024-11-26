@@ -3,21 +3,31 @@ package org.berandev.byterover;
 import javax.swing.AbstractAction;
 
 public abstract class MenuItemAction extends AbstractAction {
+    private Object[] subActionKeys;
     private boolean visible;
     private boolean separated;
 
     public MenuItemAction(String name){
         super(name);
+        subActionKeys = new Object[0];
         visible = true;
         separated = false;
     }
 
-    public void setHint(String hint){
-        putValue(SHORT_DESCRIPTION, hint);
+    public Object[] getSubActionKeys(){
+        return subActionKeys;
     }
 
-    public void setName(String name){
-        putValue(NAME, name);
+    public boolean isVisible(){
+        return visible;
+    }
+
+    public boolean isSeparated(){
+        return separated;
+    }
+
+    public void setSubActionKeys(Object[] keys){
+        subActionKeys = keys;
     }
 
     public void setVisible(boolean value){
@@ -28,12 +38,12 @@ public abstract class MenuItemAction extends AbstractAction {
         separated = value;
     }
 
-    public boolean isVisible(){
-        return visible;
+    public void setHint(String hint){
+        putValue(SHORT_DESCRIPTION, hint);
     }
 
-    public boolean isSeparated(){
-        return separated;
+    public void setName(String name){
+        putValue(NAME, name);
     }
 
     public abstract void actionUpdate();

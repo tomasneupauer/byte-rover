@@ -27,6 +27,7 @@ public class ReaderControl implements ActionListener {
         readerView = new ReaderView();
         structureTree = (StructureTree) readerView.getStructureTree();
         contentEditorPane = readerView.getContentEditorPane();
+        appControl.getActionModel().newStructureTreeActions(structureTree);
     }
 
     public void initControl(){

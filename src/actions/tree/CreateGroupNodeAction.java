@@ -3,13 +3,11 @@ package org.berandev.byterover;
 import java.awt.event.ActionEvent;
 import javax.swing.tree.TreePath;
 
-class CreateNewGroupAction extends MenuItemAction {
-    private StructureTreeModel treeModel;
+public class CreateGroupNodeAction extends MenuItemAction {
     private StructureTree structureTree;
 
-    public CreateNewGroupAction(StructureTree tree){
-        super(ResourceLoader.getString("action.createNewGroup"));
-        treeModel = (StructureTreeModel) tree.getModel();
+    public CreateGroupNodeAction(StructureTree tree){
+        super(ResourceLoader.getString("action.createGroupNode"));
         structureTree = tree;
     }
 
@@ -19,6 +17,7 @@ class CreateNewGroupAction extends MenuItemAction {
     }
 
     public void actionPerformed(ActionEvent event){
+        StructureTreeModel treeModel = (StructureTreeModel) structureTree.getModel();
         StructureTreeNode contextNode = structureTree.getContextNode();
         String placeholder = ResourceLoader.getPlaceholder("newGroup");
         StructureTreeNode childNode = new GroupNode(placeholder);

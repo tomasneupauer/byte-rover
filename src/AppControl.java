@@ -8,11 +8,13 @@ public class AppControl {
 
     private AppView appView;
     private StructureTreeModel projectModel;
+    private ActionModel actionModel;
     private ReaderControl readerControl;
 
     public AppControl(){
         FlatLightLaf.setup();
         appView = new AppView();
+        actionModel = new ActionModel();
         readerControl = new ReaderControl(this);
     }
 
@@ -30,6 +32,10 @@ public class AppControl {
 
     public StructureTreeModel getProjectModel(){
         return projectModel;
+    }
+
+    public ActionModel getActionModel(){
+        return actionModel;
     }
 
     public JMenuBar getMenuBar() {

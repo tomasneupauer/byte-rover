@@ -2,7 +2,7 @@ package org.berandev.byterover;
 
 import java.awt.event.ActionEvent;
 
-class RenameTreeNodeAction extends MenuItemAction {
+public class RenameTreeNodeAction extends MenuItemAction {
     private StructureTree structureTree;
 
     public RenameTreeNodeAction(StructureTree tree){

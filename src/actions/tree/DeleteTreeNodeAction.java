@@ -2,17 +2,16 @@ package org.berandev.byterover;
 
 import java.awt.event.ActionEvent;
 
-class DeleteTreeNodeAction extends MenuItemAction {
-    private StructureTreeModel treeModel;
+public class DeleteTreeNodeAction extends MenuItemAction {
     private StructureTree structureTree;
 
     public DeleteTreeNodeAction(StructureTree tree){
         super(ResourceLoader.getString("action.deleteBase"));
-        treeModel = (StructureTreeModel) tree.getModel();
         structureTree = tree;
     }
 
     public void actionUpdate(){
+        StructureTreeModel treeModel = (StructureTreeModel) structureTree.getModel();
         StructureTreeNode contextNode = structureTree.getContextNode();
         setVisible(!contextNode.isRoot());
         if (treeModel.isDefault(contextNode)){
@@ -40,6 +39,7 @@ class DeleteTreeNodeAction extends MenuItemAction {
     }
 
     public void actionPerformed(ActionEvent event){
+        StructureTreeModel treeModel = (StructureTreeModel) structureTree.getModel();
         StructureTreeNode contextNode = structureTree.getContextNode();
         if (treeModel.isCurrent(contextNode)){
             treeModel.setCurrentNode(treeModel.getDefaultNode());
