@@ -15,6 +15,7 @@ public class StructureTreeMenuAction extends MenuItemAction {
     }
 
     public void actionUpdate(){}
+
     public void actionPerformed(ActionEvent event){}
 }
 

@@ -2,11 +2,11 @@ package org.berandev.byterover;
 
 import java.awt.event.ActionEvent;
 
-public class EditMenuAction extends MenuItemAction {
-    public EditMenuAction(){
-        super(ResourceLoader.getString("action.editMenu"));
+public class FileMenuAction extends MenuItemAction {
+    public FileMenuAction(){
+        super(ResourceLoader.getString("action.fileMenu"));
         setSubActionKeys(new Object[]{
-            ActionModel.STRUCTURE_TREE_MENU
+            ActionModel.OPEN_PROJECT
         });
     }
 

@@ -19,8 +19,13 @@ public class ActionModel implements ActionKeys {
     }
 
     public void newMenuActions(){
-       putAction(EDIT_MENU, new EditMenuAction());
+        putAction(FILE_MENU, new FileMenuAction());
+        putAction(EDIT_MENU, new EditMenuAction());
         putAction(STRUCTURE_TREE_MENU, new StructureTreeMenuAction());
+    }
+
+    public void newProjectActions(AppControl control){
+        putAction(OPEN_PROJECT, new OpenProjectAction(control));
     }
 
     public void newStructureTreeActions(StructureTree tree){

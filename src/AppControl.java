@@ -1,6 +1,7 @@
 package org.berandev.byterover;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.Component;
 
 public class AppControl {
     public static final String READER_CARD = "READER_CARD";
@@ -18,6 +19,7 @@ public class AppControl {
         menuFactory = new MenuFactory(actionModel);
         readerControl = new ReaderControl(this);
         actionModel.newMenuActions();
+        actionModel.newProjectActions(this);
     }
 
     public void importProjectModel(String path){
@@ -30,6 +32,10 @@ public class AppControl {
         }
         readerControl.loadControl();
         appView.switchCard(READER_CARD);
+    }
+
+    public Component getView(){
+        return appView.getContentPane();
     }
 
     public StructureTreeModel getProjectModel(){
@@ -45,6 +51,7 @@ public class AppControl {
     }
 
     public void initControl(){
+        appView.getJMenuBar().add(menuFactory.newMenu(ActionModel.FILE_MENU));
         appView.getJMenuBar().add(menuFactory.newMenu(ActionModel.EDIT_MENU));
         appView.add(readerControl.getView(), READER_CARD);
         appView.setVisible(true);
