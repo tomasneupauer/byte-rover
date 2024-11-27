@@ -10,67 +10,76 @@ import javax.swing.event.MenuEvent;
 import java.awt.Component;
 
 public class MenuFactory {
-    public static JPopupMenu newPopupMenu(MenuItemAction[] items){
+    private ActionModel actionModel;
+
+    public MenuFactory(ActionModel model){
+        actionModel = model;
+    }
+
+    public JPopupMenu newPopupMenu(Object rootKey){
+        MenuItemAction rootAction = actionModel.getAction(rootKey);
         JPopupMenu actionPopupMenu = new ActionPopupMenu();
-        for (MenuItemAction action : items){
-            actionPopupMenu.add(new JMenuItem(action));
-            if (action.isSeparated()){
+        for (Object childKey : rootAction.getSubActionKeys()){
+            MenuItemAction childAction = actionModel.getAction(childKey);
+            if (childAction.isMenu()){
+                actionPopupMenu.add(newMenu(childKey));
+            }
+            else {
+                actionPopupMenu.add(new JMenuItem(childAction));
+            }
+            if (childAction.isSeparated()){
                 actionPopupMenu.addSeparator();
             }
         }
         return actionPopupMenu;
     }
 
-    public static JMenu newMenu(MenuItemAction[] items, Action menu){
-        JMenu actionMenu = new ActionMenu(menu);
-        for (MenuItemAction action : items){
-            actionMenu.add(new JMenuItem(action));
-            if (action.isSeparated()){
+    public JMenu newMenu(Object rootKey){
+        MenuItemAction rootAction = actionModel.getAction(rootKey);
+        JMenu actionMenu = new ActionMenu(rootAction);
+        for (Object childKey : rootAction.getSubActionKeys()){
+            MenuItemAction childAction = actionModel.getAction(childKey);
+            if (childAction.isMenu()){
+                actionMenu.add(newMenu(childKey));
+            }
+            else {
+                actionMenu.add(new JMenuItem(childAction));
+            }
+            if (childAction.isSeparated()){
                 actionMenu.addSeparator();
             }
         }
         return actionMenu;
     }
 
-    public static void updateMenuElements(MenuElement menu){
-        MenuElement[] subElements = menu.getSubElements();
-        for (int i=0; i<subElements.length; i++){
-            if (subElements[i] instanceof JPopupMenu){
-                updateMenuElements(subElements[i]);
-            }
-            else {
-                updateMenuItem((JMenuItem) subElements[i]);
-            }
+    private void updatePopupItems(JPopupMenu popup){
+        for (MenuElement item : popup.getSubElements()){
+            JMenuItem menuItem = (JMenuItem) item;
+            MenuItemAction action = (MenuItemAction) menuItem.getAction();
+            action.actionUpdate();
+            menuItem.setVisible(action.isVisible());
         }
     }
 
-    private static void updateMenuItem(JMenuItem item){
-        MenuItemAction action = (MenuItemAction) item.getAction();
-        action.actionUpdate();
-        item.setVisible(action.isVisible());
-    }
-}
-
-class ActionPopupMenu extends JPopupMenu {
-    @Override
-    public void show(Component invoker, int x, int y){
-        MenuFactory.updateMenuElements(this);
-        super.show(invoker, x, y);
-    }
-}
-
-class ActionMenu extends JMenu {
-    public ActionMenu(Action menu){
-        super(menu);
-        addMenuListener(new UpdateListener());
-    }
-
-    private class UpdateListener implements MenuListener {
-        public void menuSelected(MenuEvent event){
-            MenuFactory.updateMenuElements(ActionMenu.this);
+    private class ActionPopupMenu extends JPopupMenu {
+        @Override
+        public void show(Component invoker, int x, int y){
+            updatePopupItems(this);
+            super.show(invoker, x, y);
         }
-        public void menuDeselected(MenuEvent event){}
-        public void menuCanceled(MenuEvent event){}
+    }
+
+    private class ActionMenu extends JMenu {
+        public ActionMenu(Action menu){
+            super(menu);
+            addMenuListener(new MenuListener(){
+                public void menuSelected(MenuEvent event){
+                    updatePopupItems(getPopupMenu());
+                }
+                public void menuDeselected(MenuEvent event){}
+                public void menuCanceled(MenuEvent event){}
+            });
+        }
     }
 }
 

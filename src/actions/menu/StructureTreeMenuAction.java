@@ -6,11 +6,11 @@ public class StructureTreeMenuAction extends MenuItemAction {
     public StructureTreeMenuAction(){
         super(ResourceLoader.getString("action.structureTreeMenu"));
         setSubActionKeys(new Object[]{
-            ActionKey.CREATE_PAGE_NODE,
-            ActionKey.CREATE_GROUP_NODE,
-            ActionKey.SET_DEFAULT_TREE_NODE,
-            ActionKey.RENAME_TREE_NODE,
-            ActionKey.DELETE_TREE_NODE
+            ActionModel.CREATE_PAGE_NODE,
+            ActionModel.CREATE_GROUP_NODE,
+            ActionModel.SET_DEFAULT_TREE_NODE,
+            ActionModel.RENAME_TREE_NODE,
+            ActionModel.DELETE_TREE_NODE
         });
     }
 
