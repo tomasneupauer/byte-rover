@@ -1,7 +1,6 @@
 package org.berandev.byterover;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import javax.swing.JMenuBar;
 
 public class AppControl {
     public static final String READER_CARD = "READER_CARD";
@@ -10,7 +9,7 @@ public class AppControl {
     private StructureTreeModel projectModel;
     private ActionModel actionModel;
     private MenuFactory menuFactory;
-    private ReaderControl readerControl;
+    private Controller readerControl;
 
     public AppControl(){
         FlatLightLaf.setup();
@@ -21,7 +20,7 @@ public class AppControl {
         actionModel.newMenuActions();
     }
 
-    public void loadProjectModel(String path){
+    public void importProjectModel(String path){
         try {
             projectModel = ArchiveImportHandler.importArchive(path);
         }
@@ -29,7 +28,7 @@ public class AppControl {
             exception.printStackTrace();
             return;
         }
-        readerControl.initControl();
+        readerControl.loadControl();
         appView.switchCard(READER_CARD);
     }
 
@@ -48,8 +47,10 @@ public class AppControl {
     public void initControl(){
         appView.getJMenuBar().add(menuFactory.newMenu(ActionModel.EDIT_MENU));
         appView.add(readerControl.getView(), READER_CARD);
-        loadProjectModel("projects/sample_project.project");
         appView.setVisible(true);
+        readerControl.initControl();
+
+        importProjectModel("projects/sample_project.project");
         appView.pack();
     }
 }

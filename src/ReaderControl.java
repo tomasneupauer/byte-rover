@@ -1,11 +1,11 @@
 package org.berandev.byterover;
 
+import javax.swing.JPanel;
 import javax.swing.JEditorPane;
-import javax.swing.JTree;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class ReaderControl implements ActionListener {
+public class ReaderControl implements Controller, ActionListener {
     private AppControl appControl;
     private ReaderView readerView;
     private StructureTree structureTree;
@@ -20,22 +20,23 @@ public class ReaderControl implements ActionListener {
         appControl.getActionModel().newStructureTreeActions(structureTree);
     }
 
+    public JPanel getView(){
+        return readerView;
+    }
+
     public void initControl(){
+        MenuFactory menuFactory = appControl.getMenuFactory();
+        structureTree.setContextMenu(menuFactory.newPopupMenu(ActionModel.STRUCTURE_TREE_MENU));
+    }
+
+    public void loadControl(){
         treeModel = appControl.getProjectModel();
         treeModel.setCurrentNode(treeModel.getDefaultNode());
         treeModel.addCurrentNodeListener(this);
         structureTree.setModel(treeModel);
         structureTree.setSelectionPath(treeModel.getCurrentPath());
-
-        MenuFactory menuFactory = appControl.getMenuFactory();
-        structureTree.setContextMenu(menuFactory.newPopupMenu(ActionModel.STRUCTURE_TREE_MENU));
-
         contentEditorPane.setEditable(false);
         updatePageEditor();
-    }
-
-    public ReaderView getView(){
-        return readerView;
     }
 
     public void actionPerformed(ActionEvent event){
