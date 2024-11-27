@@ -1,9 +1,9 @@
 package org.berandev.byterover;
 
-import javax.swing.JPanel;
 import javax.swing.JEditorPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Component;
 
 public class ReaderControl implements Controller, ActionListener {
     private AppControl appControl;
@@ -20,7 +20,7 @@ public class ReaderControl implements Controller, ActionListener {
         appControl.getActionModel().newStructureTreeActions(structureTree);
     }
 
-    public JPanel getView(){
+    public Component getView(){
         return readerView;
     }
 

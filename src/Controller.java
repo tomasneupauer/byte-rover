@@ -1,9 +1,9 @@
 package org.berandev.byterover;
 
-import javax.swing.JPanel;
+import java.awt.Component;
 
 public interface Controller {
-    JPanel getView();
+    Component getView();
     void initControl();
     void loadControl();
 }
