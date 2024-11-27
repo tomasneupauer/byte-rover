@@ -7,7 +7,7 @@ public class AppControl {
     public static final String READER_CARD = "READER_CARD";
 
     private AppView appView;
-    private StructureTreeModel projectModel;
+    private ProjectModel projectModel;
     private ActionModel actionModel;
     private MenuFactory menuFactory;
     private Controller readerControl;
@@ -38,7 +38,7 @@ public class AppControl {
         return appView.getContentPane();
     }
 
-    public StructureTreeModel getProjectModel(){
+    public ProjectModel getProjectModel(){
         return projectModel;
     }
 

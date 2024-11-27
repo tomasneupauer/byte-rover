@@ -18,18 +18,6 @@ public class ByteArray {
         setContent(contentStream);
     }
 
-    public void setContent(byte[] contentByteArray){
-        contentBytes = contentByteArray;
-    }
-
-    public void setContent(String contentString){
-        contentBytes = contentString.getBytes();
-    }
-
-    public void setContent(ByteArrayOutputStream contentStream){
-        contentBytes = contentStream.toByteArray();
-    }
-
     public byte[] getBytes(){
         return contentBytes;
     }
@@ -40,6 +28,18 @@ public class ByteArray {
 
     public ByteArrayInputStream toInputStream(){
         return new ByteArrayInputStream(contentBytes);
+    }
+
+    public void setContent(byte[] contentByteArray){
+        contentBytes = contentByteArray;
+    }
+
+    public void setContent(String contentString){
+        contentBytes = contentString.getBytes();
+    }
+
+    public void setContent(ByteArrayOutputStream contentStream){
+        contentBytes = contentStream.toByteArray();
     }
 }
 

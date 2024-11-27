@@ -13,21 +13,6 @@ public class StructureTreeModel extends DefaultTreeModel {
         super(root);
     }
 
-    public void setDefaultNode(StructureTreeNode node){
-        defaultNode = node;
-    }
-
-    public void setCurrentNode(StructureTreeNode node){
-        currentNode = node;
-        if (currentNodeListener != null){
-            currentNodeListener.actionPerformed(null);
-        }
-    }
-
-    public void addCurrentNodeListener(ActionListener listener){
-        currentNodeListener = listener;
-    }
-
     public StructureTreeNode getDefaultNode(){
         return defaultNode;
     }
@@ -50,5 +35,20 @@ public class StructureTreeModel extends DefaultTreeModel {
 
     public boolean isCurrent(StructureTreeNode node){
         return currentNode.equals(node);
+    }
+
+    public void setDefaultNode(StructureTreeNode node){
+        defaultNode = node;
+    }
+
+    public void setCurrentNode(StructureTreeNode node){
+        currentNode = node;
+        if (currentNodeListener != null){
+            currentNodeListener.actionPerformed(null);
+        }
+    }
+
+    public void addCurrentNodeListener(ActionListener listener){
+        currentNodeListener = listener;
     }
 }

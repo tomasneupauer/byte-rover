@@ -4,11 +4,6 @@ public class PageModel {
     private ByteArray contentEntry;
     private String contentType;
 
-    public void setContent(ByteArray entry, String type){
-        contentEntry = entry;
-        contentType = type;
-    }
-
     public String readContent(){
         return hasContent() ? contentEntry.toString() : "";
     }
@@ -19,6 +14,11 @@ public class PageModel {
 
     public boolean hasContent(){
         return contentEntry != null;
+    }
+
+    public void setContent(ByteArray entry, String type){
+        contentEntry = entry;
+        contentType = type;
     }
 }
 

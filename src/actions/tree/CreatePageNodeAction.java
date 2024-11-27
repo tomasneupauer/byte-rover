@@ -20,8 +20,7 @@ public class CreatePageNodeAction extends MenuItemAction {
         StructureTreeModel treeModel = (StructureTreeModel) structureTree.getModel();
         StructureTreeNode contextNode = structureTree.getContextNode();
         String placeholder = ResourceLoader.getPlaceholder("newPage");
-        ProjectTreeNode childNode = new ProjectTreeNode(placeholder);
-        childNode.setPageModel(new PageModel());
+        StructureTreeNode childNode = new PageNode(placeholder);
         int childIndex = contextNode.getChildCount();
         treeModel.insertNodeInto(childNode, contextNode, childIndex);
         TreePath childPath = new TreePath(childNode.getPath());

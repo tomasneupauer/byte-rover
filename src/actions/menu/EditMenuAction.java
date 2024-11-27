@@ -6,7 +6,7 @@ public class EditMenuAction extends MenuItemAction {
     public EditMenuAction(){
         super(ResourceLoader.getString("action.editMenu"));
         setSubActionKeys(new Object[]{
-            ActionModel.STRUCTURE_TREE_MENU
+            ActionModel.PAGE_TREE_MENU
         });
     }
 

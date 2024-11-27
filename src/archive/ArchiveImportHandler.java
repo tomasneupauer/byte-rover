@@ -6,15 +6,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ArchiveImportHandler {
     private static ProjectArchive projectArchive;
-    private static StructureTreeModel projectModel;
     private static StructureTreeNode defaultNode;
 
-    public static StructureTreeModel importArchive(String archivePath) throws Exception {
+    public static ProjectModel importArchive(String archivePath) throws Exception {
         projectArchive = ZipArchiveHandler.loadZipArchive(archivePath);
         String descriptorFilename = ResourceLoader.getFilename("projectDescriptor");
         if (!projectArchive.containsEntry(descriptorFilename)){
@@ -25,30 +23,34 @@ public class ArchiveImportHandler {
         ByteArray descriptorEntry = projectArchive.getEntry(descriptorFilename);
         Document projectDescriptor = docBuilder.parse(descriptorEntry.toInputStream());
         projectDescriptor.getDocumentElement().normalize();
-        return buildProjectTreeModel(projectDescriptor.getDocumentElement());
+        return buildProjectModel(projectDescriptor.getDocumentElement());
     }
 
-    private static StructureTreeModel buildProjectTreeModel(Element projectRoot){
-        projectModel = new StructureTreeModel(buildProjectTreeNode(projectRoot));
-        projectModel.setDefaultNode(defaultNode);
+    private static ProjectModel buildProjectModel(Element element){
+        ProjectModel projectModel = new ProjectModel();
+        StructureTreeNode pageTreeRoot = buildPageTreeNode(element);
+        StructureTreeModel pageTreeModel = new StructureTreeModel(pageTreeRoot);
+        pageTreeModel.setDefaultNode(defaultNode);
+        projectModel.setPageTreeModel(pageTreeModel);
         return projectModel;
     }
 
-    private static StructureTreeNode buildProjectTreeNode(Element element){
-        ProjectTreeNode treeNode = new ProjectTreeNode(element.getAttribute("name"));
+    private static StructureTreeNode buildPageTreeNode(Element element){
         if (element.getNodeName().equals("page")){
+            PageNode pageNode = new PageNode(element.getAttribute("name"));
             if (element.getAttribute("default").equals("true")){
-                defaultNode = treeNode;
+                defaultNode = pageNode;
             }
-            treeNode.setPageModel(new PageModel());
-            buildPageContent(treeNode.getPageModel(), element);
+            buildPageContent(pageNode.getPageModel(), element);
+            return pageNode;
         }
         else {
+            GroupNode groupNode = new GroupNode(element.getAttribute("name"));
             for (Element childElement : getValidChildren(element)){
-                treeNode.add(buildProjectTreeNode(childElement));
+                groupNode.add(buildPageTreeNode(childElement));
             }
+            return groupNode;
         }
-        return treeNode;
     }
 
     private static void buildPageContent(PageModel page, Element element){

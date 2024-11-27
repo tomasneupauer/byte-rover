@@ -3,7 +3,7 @@ package org.berandev.byterover;
 public interface ActionKeys {
     String FILE_MENU = "FILE_MENU";
     String EDIT_MENU = "EDIT_MENU";
-    String STRUCTURE_TREE_MENU = "STRUCTURE_TREE_MENU";
+    String PAGE_TREE_MENU = "PAGE_TREE_MENU";
     String OPEN_PROJECT = "OPEN_PROJECT";
     String CREATE_PAGE_NODE = "CREATE_PAGE_NODE";
     String CREATE_GROUP_NODE = "CREATE_GROUP_NODE";

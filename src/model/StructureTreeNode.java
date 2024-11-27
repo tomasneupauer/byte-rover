@@ -8,8 +8,8 @@ public interface StructureTreeNode extends MutableTreeNode {
     int GROUP_NODE = 1;
     int PAGE_NODE = 2;
 
-    public int getType();
     public TreeNode[] getPath(); 
+    public int getType();
     public boolean isRoot();
     public boolean isLeaf();
     public boolean isShowable();

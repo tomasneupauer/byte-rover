@@ -26,11 +26,11 @@ public class ReaderControl implements Controller, ActionListener {
 
     public void initControl(){
         MenuFactory menuFactory = appControl.getMenuFactory();
-        structureTree.setContextMenu(menuFactory.newPopupMenu(ActionModel.STRUCTURE_TREE_MENU));
+        structureTree.setContextMenu(menuFactory.newPopupMenu(ActionModel.PAGE_TREE_MENU));
     }
 
     public void loadControl(){
-        treeModel = appControl.getProjectModel();
+        treeModel = appControl.getProjectModel().getPageTreeModel();
         treeModel.setCurrentNode(treeModel.getDefaultNode());
         treeModel.addCurrentNodeListener(this);
         structureTree.setModel(treeModel);
@@ -44,7 +44,7 @@ public class ReaderControl implements Controller, ActionListener {
     }
 
     private void updatePageEditor(){
-        ProjectTreeNode selectedNode = (ProjectTreeNode) treeModel.getCurrentNode();
+        PageNode selectedNode = (PageNode) treeModel.getCurrentNode();
         PageModel selectedPage = selectedNode.getPageModel();
         contentEditorPane.setContentType(selectedPage.getContentType());
         contentEditorPane.setText(selectedPage.readContent());

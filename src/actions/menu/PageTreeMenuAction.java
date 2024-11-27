@@ -2,9 +2,9 @@ package org.berandev.byterover;
 
 import java.awt.event.ActionEvent;
 
-public class StructureTreeMenuAction extends MenuItemAction {
-    public StructureTreeMenuAction(){
-        super(ResourceLoader.getString("action.structureTreeMenu"));
+public class PageTreeMenuAction extends MenuItemAction {
+    public PageTreeMenuAction(){
+        super(ResourceLoader.getString("action.pageTreeMenu"));
         setSubActionKeys(new Object[]{
             ActionModel.CREATE_PAGE_NODE,
             ActionModel.CREATE_GROUP_NODE,
