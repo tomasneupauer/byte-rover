@@ -34,6 +34,15 @@ public class AppControl {
         appView.switchCard(READER_CARD);
     }
 
+    public void exportProjectModel(String path){
+        try {
+            ArchiveExportHandler.exportArchive(projectModel, path);
+        }
+        catch (Exception exception){
+            exception.printStackTrace();
+        }
+    }
+
     public Component getView(){
         return appView.getContentPane();
     }

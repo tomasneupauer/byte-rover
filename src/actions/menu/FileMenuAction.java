@@ -6,7 +6,8 @@ public class FileMenuAction extends MenuItemAction {
     public FileMenuAction(){
         super(ResourceLoader.getString("action.fileMenu"));
         setSubActionKeys(new Object[]{
-            ActionModel.OPEN_PROJECT
+            ActionModel.OPEN_PROJECT,
+            ActionModel.SAVE_PROJECT
         });
     }
 

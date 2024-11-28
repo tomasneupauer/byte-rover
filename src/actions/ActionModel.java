@@ -26,6 +26,7 @@ public class ActionModel implements ActionKeys {
 
     public void newProjectActions(AppControl control){
         putAction(OPEN_PROJECT, new OpenProjectAction(control));
+        putAction(SAVE_PROJECT, new SaveProjectAction(control));
     }
 
     public void newStructureTreeActions(StructureTree tree){
