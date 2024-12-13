@@ -4,8 +4,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-
-// pageTreeModel -> page-tree.xml, pages
+import java.io.ByteArrayOutputStream;
 
 public class ArchiveExportHandler {
     private static StructureTreeModel pageTreeModel;
@@ -15,14 +14,17 @@ public class ArchiveExportHandler {
         pageTreeModel = model.getPageTreeModel();
         projectArchive = new ProjectArchive();
         buildPageTree();
+        ZipHandler.saveArchive(projectArchive, path);
     }
 
     private static void buildPageTree() throws Exception {
         StructureTreeNode rootNode = (StructureTreeNode) pageTreeModel.getRoot();
         Document document = new Document(buildPageTreeNode(rootNode));
         XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
-        outputter.output(document, System.out);
-        //projectArchive.put(parsedDocument)
+        ByteArrayOutputStream descriptor = new ByteArrayOutputStream();
+        outputter.output(document, descriptor);
+        String filename = ResourceLoader.getFilename("pageTreeDescriptor");
+        projectArchive.putUnique(ByteArray(descriptor), filename);
     }
 
     private static Element buildPageTreeNode(StructureTreeNode node){

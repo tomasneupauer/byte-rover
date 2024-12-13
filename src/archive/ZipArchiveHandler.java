@@ -1,14 +1,17 @@
 package org.berandev.byterover;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 import java.util.zip.ZipEntry;
 
 public class ZipArchiveHandler {
     private static ProjectArchive projectArchive;
     private static ZipInputStream zipInputStream;
+    private static ZipOutputStream zipOutputStream;
 
     public static ProjectArchive loadZipArchive(String zipPath) throws Exception {
         projectArchive = new ProjectArchive();
@@ -31,8 +34,22 @@ public class ZipArchiveHandler {
         return projectArchive;
     }
 
-    public static void saveZipArchive(String zipPath, ProjectArchive projectArchive) throws Exception {
-        
+    public static void saveArchive(ProjectArchive archive, String path) throws Exception {
+        try {
+            zipOutputStream = new ZipOutputStream(new FileOutputStream(path));
+        }
+        catch (Exception exception){
+            throw new Exception(ResourceLoader.getException("archive.notCreated"));
+        }
+        try {
+            for (String entryName : archive.getEntryNames()){
+                
+            }
+            zipOutputStream.close();
+        }
+        catch (Exception exception){
+            throw new Exception(ResourceLoader.getException("archive.saveFailed"));
+        }
     }
 
     private static void readZipEntry(ZipEntry zipEntry) throws Exception {

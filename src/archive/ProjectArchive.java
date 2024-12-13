@@ -2,6 +2,7 @@ package org.berandev.byterover;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ProjectArchive {
     private Map<String, ByteArray> archiveEntries;
@@ -12,8 +13,8 @@ public class ProjectArchive {
         entryId = 0;
     }
 
-    public void putEntry(String name, ByteArray entry){
-        archiveEntries.put(name, entry);
+    public Set<String> getEntryNames(){
+        return archiveEntries.keySet();
     }
 
     public ByteArray getEntry(String name){
@@ -28,6 +29,15 @@ public class ProjectArchive {
 
     public boolean containsEntry(String name){
         return archiveEntries.containsKey(name);
+    }
+
+    //deprecated
+    public void putEntry(String name, ByteArray entry){
+        archiveEntries.put(name, entry);
+    }
+
+    public void putUnique(ByteArray entry, String name){
+        archiveEntries.put(name, entry);
     }
 }
 
