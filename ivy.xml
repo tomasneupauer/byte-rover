@@ -3,7 +3,7 @@
     <info organisation="org.berandev" module="byterover"/>
     <dependencies>
         <dependency org="com.formdev" name="flatlaf" rev="3.5.2"/>
-        <dependency org="org.jdom" naem="jdom2" rev="2.0.6.1"/>
+        <dependency org="org.jdom" name="jdom2" rev="2.0.6.1"/>
         <!-- <dependency org="org.apache.xmlgraphics" name="batik-swing" rev="1.18"/> -->
     </dependencies>
 </ivy-module>
