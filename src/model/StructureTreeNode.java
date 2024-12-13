@@ -7,11 +7,15 @@ public interface StructureTreeNode extends MutableTreeNode {
     int PROJECT_NODE = 0;
     int GROUP_NODE = 1;
     int PAGE_NODE = 2;
+    int getType();
 
-    public TreeNode[] getPath(); 
-    public int getType();
-    public boolean isRoot();
-    public boolean isLeaf();
-    public boolean isShowable();
+    Object getUserObject();
+    TreeNode[] getPath(); 
+    boolean isShowable();
+    boolean isRoot();
+
+    default String getName(){
+        return (String) getUserObject();
+    }
 }
 

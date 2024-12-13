@@ -4,6 +4,10 @@ public class PageModel {
     private ByteArray contentEntry;
     private String contentType;
 
+    public ByteArray getContentEntry(){
+        return contentEntry;
+    }
+
     public String readContent(){
         return hasContent() ? contentEntry.toString() : "";
     }
