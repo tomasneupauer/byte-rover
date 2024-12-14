@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import java.util.zip.ZipEntry;
@@ -35,20 +37,26 @@ public class ZipArchiveHandler {
     }
 
     public static void saveArchive(ProjectArchive archive, String path) throws Exception {
-        try {
-            zipOutputStream = new ZipOutputStream(new FileOutputStream(path));
-        }
-        catch (Exception exception){
-            throw new Exception(ResourceLoader.getException("archive.notCreated"));
-        }
-        try {
+        try (
+            FileOutputStream fileOutputStream = new FileOutputStream(path);
+            ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
+        ){
             for (String entryName : archive.getEntryNames()){
-                
+                ZipEntry zipEntry = new ZipEntry(entryName);
+                zipOutputStream.putNextEntry(zipEntry);
+                copyStream(archive.getEntry(entryName).toInputStream(), zipOutputStream);
+                zipOutputStream.closeEntry();
             }
-            zipOutputStream.close();
         }
         catch (Exception exception){
             throw new Exception(ResourceLoader.getException("archive.saveFailed"));
+        }
+    }
+
+    private static void copyStream(InputStream source, OutputStream target) throws Exception {
+        byte[] buffer = new byte[1024]; int length;
+        while ((length = source.read(buffer)) > 0){
+            target.write(buffer, 0, length);
         }
     }
 

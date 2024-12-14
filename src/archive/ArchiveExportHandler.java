@@ -14,7 +14,7 @@ public class ArchiveExportHandler {
         pageTreeModel = model.getPageTreeModel();
         projectArchive = new ProjectArchive();
         buildPageTree();
-        ZipHandler.saveArchive(projectArchive, path);
+        ZipArchiveHandler.saveArchive(projectArchive, path);
     }
 
     private static void buildPageTree() throws Exception {
@@ -24,7 +24,7 @@ public class ArchiveExportHandler {
         ByteArrayOutputStream descriptor = new ByteArrayOutputStream();
         outputter.output(document, descriptor);
         String filename = ResourceLoader.getFilename("pageTreeDescriptor");
-        projectArchive.putUnique(ByteArray(descriptor), filename);
+        projectArchive.putUnique(new ByteArray(descriptor), filename);
     }
 
     private static Element buildPageTreeNode(StructureTreeNode node){
