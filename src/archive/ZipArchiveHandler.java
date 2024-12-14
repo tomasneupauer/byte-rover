@@ -2,38 +2,30 @@ package org.berandev.byterover;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import java.util.zip.ZipEntry;
 
 public class ZipArchiveHandler {
-    private static ProjectArchive projectArchive;
-    private static ZipInputStream zipInputStream;
-    private static ZipOutputStream zipOutputStream;
-
-    public static ProjectArchive loadZipArchive(String zipPath) throws Exception {
-        projectArchive = new ProjectArchive();
-        try {
-            zipInputStream = new ZipInputStream(new FileInputStream(zipPath));
-        }
-        catch (Exception exc){
-            throw new Exception(ResourceLoader.getException("archiveNotFound"));
-        }
-        try {
+    public static void loadArchive(ProjectArchive archive, String path) throws Exception {
+        try (
+            FileInputStream fileInputStream = new FileInputStream(path);
+            ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
+        ){
             ZipEntry zipEntry;
             while ((zipEntry = zipInputStream.getNextEntry()) != null){
-                readZipEntry(zipEntry);
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                copyStream(zipInputStream, outputStream);
+                archive.putUnique(new ByteArray(outputStream), zipEntry.getName());
+                zipInputStream.closeEntry();
             }
-            zipInputStream.close();
         }
-        catch (Exception exc){
-            throw new Exception(ResourceLoader.getException("archiveLoadFailed"));
+        catch (Exception exception){
+            throw new Exception(ResourceLoader.getException("archive.loadFailed"));
         }
-        return projectArchive;
     }
 
     public static void saveArchive(ProjectArchive archive, String path) throws Exception {
@@ -44,7 +36,8 @@ public class ZipArchiveHandler {
             for (String entryName : archive.getEntryNames()){
                 ZipEntry zipEntry = new ZipEntry(entryName);
                 zipOutputStream.putNextEntry(zipEntry);
-                copyStream(archive.getEntry(entryName).toInputStream(), zipOutputStream);
+                ByteArray archiveEntry = archive.getEntry(entryName);
+                copyStream(archiveEntry.toInputStream(), zipOutputStream);
                 zipOutputStream.closeEntry();
             }
         }
@@ -58,15 +51,6 @@ public class ZipArchiveHandler {
         while ((length = source.read(buffer)) > 0){
             target.write(buffer, 0, length);
         }
-    }
-
-    private static void readZipEntry(ZipEntry zipEntry) throws Exception {
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024]; int length;
-        while ((length = zipInputStream.read(buffer)) > 0){
-            outStream.write(buffer, 0, length);
-        }
-        projectArchive.putEntry(zipEntry.getName(), new ByteArray(outStream));
     }
 }
 

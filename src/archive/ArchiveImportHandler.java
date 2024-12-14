@@ -13,7 +13,8 @@ public class ArchiveImportHandler {
     private static StructureTreeNode defaultNode;
 
     public static ProjectModel importArchive(String archivePath) throws Exception {
-        projectArchive = ZipArchiveHandler.loadZipArchive(archivePath);
+        projectArchive = new ProjectArchive();
+        ZipArchiveHandler.loadArchive(projectArchive, archivePath);
         String descriptorFilename = ResourceLoader.getFilename("projectDescriptor");
         if (!projectArchive.containsEntry(descriptorFilename)){
             throw new Exception(ResourceLoader.getException("descriptorNotFound"));
