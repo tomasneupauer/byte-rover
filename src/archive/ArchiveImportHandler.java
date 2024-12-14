@@ -8,10 +8,27 @@ import org.w3c.dom.NodeList;
 import java.util.ArrayList;
 import java.util.List;
 
+//import org.jdom2.Document;
+//import org.jdom2.Element;
+//import org.idom2.input.SAXBuilder;
+
 public class ArchiveImportHandler {
     private static ProjectArchive projectArchive;
     private static StructureTreeNode defaultNode;
+/*
+    public static void importArchive(ProjectModel model, String path) throws Exception {
+        ProjectArchive projectArchive = new ProjectArchive();
+        ZipArchiveHandler.loadArchive(projectArchive, path);
+        model.setPageTreeModel(buildPageTree(projectArchive));
+    }
 
+    private static buildPageTree(ProjectArchive archive) throws Exception {
+        String filename = ResourceLoader.getFilename("pageTreeDescriptor");
+        if (!archive.containsEntry(filename)){
+            throw new Exception(ResourceLoader.getException("archive.loadFailed"));
+        }
+    }
+*/
     public static ProjectModel importArchive(String archivePath) throws Exception {
         projectArchive = new ProjectArchive();
         ZipArchiveHandler.loadArchive(projectArchive, archivePath);
